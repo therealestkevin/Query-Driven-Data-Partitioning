@@ -3,6 +3,7 @@ import math
 import sys
 from clustering import Clustering
 
+choices = [0, 1]
 
 def assigncentroids(clusterings, coorddata, kmeans):
 
@@ -19,8 +20,12 @@ def assigncentroids(clusterings, coorddata, kmeans):
         minDist = sys.maxsize
         for j3 in range(len(curmeans)):
             dist = euclidean(curcoords, curmeans[j3])
+            if dist == minDist:
+                randomchoice = random.choice(choices)
+                if(randomchoice == 1):
+                    minCluster = j3
 
-            if dist < minDist:
+            elif dist < minDist:
                 minDist = dist
                 minCluster = j3
         clusterings[minCluster].points.append(j2)
@@ -48,7 +53,7 @@ def euclidean(point1, point2):
 
 
 
-choices = [0, 1]
+
 
 threshold = 0.01
 
@@ -109,6 +114,8 @@ for clusterers in Clusterings:
     print(clusterers.points)
 
 recomputemeans(Clusterings, coordData)
+
+print("\nMeans After Recomputation")
 
 for clst in Clusterings:
     print(clst.mean)
