@@ -1,8 +1,8 @@
 class Clustering:
 
-    def __init__(self):
-        self.clusters = []
-        self.mean = []
+    def __init__(self, mean):
+        self.points = []
+        self.mean = mean
 
 
 
