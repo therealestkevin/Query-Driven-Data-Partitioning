@@ -1,9 +1,11 @@
 import random
 import math
 import sys
+import copy
 from clustering import Clustering
 
 choices = [0, 1]
+
 
 def assigncentroids(clusterings, coorddata, kmeans):
 
@@ -31,8 +33,43 @@ def assigncentroids(clusterings, coorddata, kmeans):
         clusterings[minCluster].points.append(j2)
 
 
-def recomputemeans(clusterings, coords):
+def reassigncentroids(clusterings, coorddata, kmeans):
+    print("\n New Centroid Points")
 
+    curmeans = []
+    tempcopycluster = copy.deepcopy(clusterings)
+    changed = 0
+
+
+    for i2 in range(len(clusterings)):
+        curmeans.append(clusterings[i2].mean)
+        clusterings[i2].points = []
+
+    for j2 in range(len(coorddata[0])):
+        curcoords = []
+        minCluster = 0
+        for l in range(kmeans):
+            curcoords.append(coorddata[l][j2])
+        minDist = sys.maxsize
+        for j3 in range(len(curmeans)):
+            dist = euclidean(curcoords, curmeans[j3])
+            if dist == minDist:
+                randomchoice = random.choice(choices)
+                if (randomchoice == 1):
+                    minCluster = j3
+
+            elif dist < minDist:
+                minDist = dist
+                minCluster = j3
+        clusterings[minCluster].points.append(j2)
+        if j2 not in tempcopycluster[minCluster].points:
+            changed += 1
+    for cls in clusterings:
+        print(cls.points)
+    return changed
+
+def recomputemeans(clusterings, coords):
+    print("\n New Means:")
     for clster in clusterings:
         totalcoord = [0]*len(clusterings)
         for pointer in clster.points:
@@ -42,6 +79,7 @@ def recomputemeans(clusterings, coords):
         newmean = [x / divisor for x in totalcoord]
 
         clster.mean = newmean
+        print(newmean)
 
 
 def euclidean(point1, point2):
@@ -49,10 +87,6 @@ def euclidean(point1, point2):
     for i3 in range(len(point1)):
         totaltemp += abs(point1[i3]-point2[i3])**2
     return math.sqrt(totaltemp)
-
-
-
-
 
 
 threshold = 0.01
@@ -111,12 +145,23 @@ print("\nPoints Assigned to Each Cluster: ")
 
 for clusterers in Clusterings:
 
-    print(clusterers.points)
+   print(clusterers.points)
 
-recomputemeans(Clusterings, coordData)
+changed = sys.maxsize
 
-print("\nMeans After Recomputation")
+while changed > int((len(coordData[0]) * threshold)):
+    recomputemeans(Clusterings, coordData)
 
-for clst in Clusterings:
-    print(clst.mean)
+    changed = reassigncentroids(Clusterings, coordData, k)
 
+
+
+#
+# recomputemeans(Clusterings, coordData)
+#
+# print("\nMeans After Recomputation")
+#
+# for clst in Clusterings:
+#     print(clst.mean)
+#
+# print(reassigncentroids(Clusterings, coordData, k))
