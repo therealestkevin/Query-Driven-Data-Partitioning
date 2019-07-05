@@ -26,6 +26,19 @@ def assigncentroids(clusterings, coorddata, kmeans):
         clusterings[minCluster].points.append(j2)
 
 
+def recomputemeans(clusterings, coords):
+
+    for clster in clusterings:
+        totalcoord = [0]*len(clusterings)
+        for pointer in clster.points:
+            for rownum in range(len(clusterings)):
+                totalcoord[rownum] += coords[rownum][pointer]
+        divisor = float(len(coords[0]))
+        newmean = [x / divisor for x in totalcoord]
+
+        clster.mean = newmean
+
+
 def euclidean(point1, point2):
     totaltemp = 0
     for i3 in range(len(point1)):
@@ -36,6 +49,10 @@ def euclidean(point1, point2):
 
 
 choices = [0, 1]
+
+threshold = 0.01
+
+maxiterations = 100
 
 # print(random.choice(choices))
 
@@ -78,12 +95,21 @@ print(randoCentroid)
 Clusterings = []
 
 for i in range(k):
+
     temp = Clustering(randoCentroid[i])
+
     Clusterings.append(temp)
 
 assigncentroids(Clusterings, coordData, k)
 
+print("\nPoints Assigned to Each Cluster: ")
+
 for clusterers in Clusterings:
+
     print(clusterers.points)
 
+recomputemeans(Clusterings, coordData)
+
+for clst in Clusterings:
+    print(clst.mean)
 
