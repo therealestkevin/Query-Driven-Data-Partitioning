@@ -89,6 +89,9 @@ def euclidean(point1, point2):
         totaltemp += abs(point1[i3] - point2[i3]) ** 2
     return math.sqrt(totaltemp)
 
+def matplot():
+    print(1)
+
 
 colors = ['r', 'g', 'b']
 
@@ -169,8 +172,8 @@ plt.show()
 changed = sys.maxsize
 
 iterations = 0
-
-while changed > int((len(coordData[0]) * threshold)) or iterations > maxiterations:
+# changed > int((len(coordData[0]) * threshold)) or iterations > maxiterations
+while changed > 0:
     recomputemeans(Clusterings, coordData)
 
     changed = reassigncentroids(Clusterings, coordData, k)
