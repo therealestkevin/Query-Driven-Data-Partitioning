@@ -1,0 +1,601 @@
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.9.0 (STARTED Nov 19, 2018), (RELEASED: Apr 14, 2019)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- CCORE (pyclustering core) is supported for MacOS.
+  See: https://github.com/annoviko/pyclustering/issues/486
+
+- Introduced parallel Fuzzy C-Means algorithm (pyclustering.cluster.fcm, ccore.clst.fcm).
+  See: https://github.com/annoviko/pyclustering/issues/386
+
+- Introduced new 'itermax' parameter for K-Means, K-Medians, K-Medoids algorithm to control maximum amount of iterations (pyclustering.cluster, ccore.clst).
+  See: https://github.com/annoviko/pyclustering/issues/496
+
+- Implemented Silhouette and Silhouette K-Search algorithm for CCORE (ccore.clst.silhouette, ccore.clst.silhouette_ksearch).
+  See: https://github.com/annoviko/pyclustering/issues/490
+
+- Implemented CLIQUE algorithms (pyclustering.cluster.clique, ccore.clst.clique).
+  See: https://github.com/annoviko/pyclustering/issues/381
+
+- Introduced new distance metrics: Canberra and Chi Square (pyclustering.utils.metric, ccore.utils.metric).
+  See: https://github.com/annoviko/pyclustering/issues/482
+
+- Optimization of CURE algorithm (C++ implementation) by using heap (multiset) instead of list to store clusters in queue (ccore.clst.cure).
+  See: https://github.com/annoviko/pyclustering/issues/479
+
+CORRECTED MAJOR BUGS:
+- Bug with crossover mask generation for genetic clustering algorithm (pyclustering.cluster.ga).
+  See: https://github.com/annoviko/pyclustering/pull/474
+
+- Bug with hanging of K-Medians algorithm for some cases when algorithm is initialized by wrong amount of centers (ccore.clst.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/498
+
+- Bug with incorrect center initialization, when the same point can be placed to result more than once (pyclustering.cluster.center_initializer, ccore.clst.kmeans_plus_plus).
+  See: https://github.com/annoviko/pyclustering/issues/497
+
+- Bug with incorrect clustering in case of CURE python implementation when clusters are allocated incorrectly (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/483
+
+- Bug with incorrect distance calculation for kmeans++ in case of index representation for centers (pyclustering.cluster.center_initializer).
+  See: https://github.com/annoviko/pyclustering/issues/485
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.8.2 (STARTED May 28, 2018), (RELEASED: Nov 19, 2018)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- Implemented Silhouette method and Silhouette KSearcher to find out proper amount of clusters (pyclustering.cluster.silhouette).
+  See: https://github.com/annoviko/pyclustering/issues/416
+
+- Introduced new 'return_index' parameter for kmeans_plus_plus and random_center_initializer algorithms (method 'initialize') to initialize initial medoids (pyclustering.cluster.center_initializer).
+  See: https://github.com/annoviko/pyclustering/issues/421
+
+- Display warning instead of throwing error if matplotlib or Pillow cannot be imported (MAC OS X problems).
+  See: https://github.com/annoviko/pyclustering/issues/455
+
+- Implemented Random Center Initializer for CCORE (ccore.clst.random_center_initializer).
+  See: no reference.
+
+- Implemented Elbow method to find out proper amount of clusters in dataset (pyclustering.cluster.elbow, ccore.clst.elbow).
+  See: https://github.com/annoviko/pyclustering/issues/416
+
+- Introduced new method 'get_optics_objects' for OPTICS algorithm to obtain detailed information about ordering (pyclustering.cluster.optics, ccore.clst.optics).
+  See: https://github.com/annoviko/pyclustering/issues/464
+
+- Added new clustering answers for SAMPLE SIMPLE data collections (pyclustering.samples).
+  See: https://github.com/annoviko/pyclustering/issues/459
+
+- Implemented multidimensional cluster visualizer (pyclustering.cluster).
+  See: https://github.com/annoviko/pyclustering/issues/450
+
+- Parallel optimization of K-Medoids algorithm (ccore.clst.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/447
+
+- Parallel optimization of K-Means and X-Means (that uses K-Means) algorithms (ccore.clst.kmeans, ccore.clst.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/451
+
+- Introduced new threshold parameter 'amount of block points' to BANG algorithm to allocate outliers more precisely (pyclustering.cluster.bang).
+  See: https://github.com/annoviko/pyclustering/issues/446
+
+- Optimization of conveying results from C++ to Python for K-Medians and K-Medoids (pyclustering.cluster.kmedoids, pyclustering.cluster.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/445
+
+- Implemented cluster generator (pyclustering.cluster.generator).
+  See: https://github.com/annoviko/pyclustering/issues/444
+
+- Implemented BANG animator to render animation of clustering process (pyclustering.cluster.bang).
+  See: https://github.com/annoviko/pyclustering/issues/442
+
+- Optimization of CURE algorithm by using Euclidean Square distance (pyclustering.cluster.cure, ccore.clst.cure).
+  See: https://github.com/annoviko/pyclustering/issues/439
+
+- Supported numpy.ndarray points in KD-tree (pyclustering.container.kdtree).
+  See: https://github.com/annoviko/pyclustering/issues/438
+
+
+CORRECTED MAJOR BUGS:
+- Bug with clustering failure in case of non-numpy user defined metric for K-Means algorithm (pyclustering.cluster.kmeans).
+  See: https://github.com/annoviko/pyclustering/issues/471
+
+- Bug with animation of correlation matrix in case of new versions of matplotlib (pyclustering.nnet.sync).
+  See: no reference.
+
+- Bug with SOM and pickle when it was not possible to store and load network using pickle (pyclustering.nnet.som).
+  See: https://github.com/annoviko/pyclustering/issues/456
+
+- Bug with DBSCAN when points are marked as a noise (pyclustering.cluster.dbscan).
+  See: https://github.com/annoviko/pyclustering/issues/462
+
+- Bug with randomly enabled connection weights in case of SyncNet based algorithms using CCORE interface (pyclustering.nnet.syncnet).
+  See: https://github.com/annoviko/pyclustering/issues/452
+
+- Bug with calculation weighted connection for Sync based clustering algorithms in C++ implementation (ccore.nnet.syncnet).
+  See: no reference
+
+- Bug with failure in case of numpy.ndarray data type in python part of CURE algorithm (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/438
+
+- Bug with BANG algorithm with empty dimensions - when data contains column with the same values (pyclustering.cluster.bang).
+  See: https://github.com/annoviko/pyclustering/issues/449
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.8.1 (STARTED Feb 23, 2018), (RELEASED: May 28, 2018)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- Implemented feature to use specific metric for distance calculation in K-Means algorithm (pyclustering.cluster.kmeans, ccore.clst.kmeans).
+  See: https://github.com/annoviko/pyclustering/issues/434
+
+- Implemented BANG-clustering algorithm with result visualizer (pyclustering.cluster.bang).
+  See: https://github.com/annoviko/pyclustering/issues/424
+
+- Implemented feature to use specific metric for distance calculation in K-Medians algorithm (pyclustering.cluster.kmedians, ccore.clst.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/429
+
+- Supported new type of input data for K-Medoids - distance matrix (pyclustering.cluster.kmedoids, ccore.clst.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/418
+
+- Implemented TTSAS algorithm (pyclustering.cluster.ttsas, ccore.clst.ttsas).
+  See: https://github.com/annoviko/pyclustering/issues/398
+
+- Implemented MBSAS algorithm (pyclustering.cluster.mbsas, ccore.clst.mbsas).
+  See: https://github.com/annoviko/pyclustering/issues/398
+
+- Implemented BSAS algorithm (pyclustering.cluster.bsas, ccore.clst.bsas).
+  See: https://github.com/annoviko/pyclustering/issues/398
+
+- Implemented feature to use specific metric for distance calculation in K-Medoids algorithm (pyclustering.cluster.kmedoids, ccore.clst.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/417
+
+- Implemented distance metric collection (pyclustering.utils.metric, ccore.utils.metric).
+  See: no reference.
+
+- Supported new type of input data for OPTICS - distance matrix (pyclustering.cluster.optics, ccore.clst.optics).
+  See: https://github.com/annoviko/pyclustering/issues/412
+
+- Supported new type of input data for DBSCAN - distance matrix (pyclustering.cluster.dbscan, ccore.clst.dbscan).
+  See: no reference.
+
+- Implemented K-Means observer and visualizer to visualize and animate clustering results (pyclustering.cluster.kmeans, ccore.clst.kmeans).
+  See: no reference.
+
+
+CORRECTED MAJOR BUGS:
+- Bug with out of range in K-Medians (pyclustering.cluster.kmedians, ccore.clst.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/428
+
+- Bug with fast linking in PCNN (python implementation only) that wasn't used despite the corresponding option (pyclustering.nnet.pcnn).
+  See: https://github.com/annoviko/pyclustering/issues/419
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.8.0 (STARTED Oct 23, 2017), (RELEASED: Feb 23, 2018)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- Optimization K-Means++ algorithm using numpy (pyclustering.cluster.center_initializer).
+  See: no reference.
+
+- Implemented K-Means++ initializer for CCORE (ccore.clst.kmeans_plus_plus).
+  See: https://github.com/annoviko/pyclustering/issues/382
+
+- Optimization of X-Means clustering process by using KMeans++ for initial centers of split regions (pyclustering.cluster.xmeans, ccore.clst.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/382
+
+- Implemented parallel Sync-family algorithms for C/C++ implementation (CCORE) only (ccore.sync).
+  See: https://github.com/annoviko/pyclustering/issues/170
+
+- C/C++ implementation is used by default to increase performance.
+  See: https://github.com/annoviko/pyclustering/issues/393
+
+- Ignore 'ccore' flag to use C/C++ if platform is not supported (pyclustering.core).
+  See: https://github.com/annoviko/pyclustering/issues/393
+
+- Optimization of python implementation of the K-Means algorithm using numpy (pyclustering.cluster.kmeans).
+  See: https://github.com/annoviko/pyclustering/issues/403
+
+- Implemented dynamic visualizer for oscillatory networks (pyclustering.nnet.dynamic_visualizer).
+  See: no reference.
+
+- Implemented C/C++ Hodgkin-Huxley oscillatory network for image segmentation in CCORE to increase performance (ccore.hhn, pyclustering.nnet.hhn).
+  See: https://github.com/annoviko/pyclustering/issues/217
+
+- Performance optimization for CCORE on linux platform.
+  See: no reference.
+
+- 32-bit platform of CCORE is supported for Linux OS.
+  See: https://github.com/annoviko/pyclustering/issues/253
+
+- 32-bit platform of CCORE is supported for Windows OS.
+  See: https://github.com/annoviko/pyclustering/issues/253
+
+- Implemented method 'get_probabilities()' for obtaining belong probability in EM-algorithm (pyclustering.cluster.ema).
+  See: https://github.com/annoviko/pyclustering/issues/387
+
+- Python implementation of CURE algorithm method 'get_clusters()' returns list of indexes (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/384
+
+- Implemented parallel processing for X-Means algorithm (ccore.clst.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/372
+
+- Implemented pool threads for parallel processing (ccore.parallel).
+  See: https://github.com/annoviko/pyclustering/issues/383
+
+- Optimization of OPTICS algorithm using KD-tree for searching nearest neighbors (pyclustering.cluster.optics, ccore.optics).
+  See: https://github.com/annoviko/pyclustering/issues/370
+
+- Optimization of DBSCAN algorithm using KD-tree for searching nearest neighbors (pyclustering.cluster.dbscan, ccore.dbscan).
+  See: https://github.com/annoviko/pyclustering/issues/369
+
+
+CORRECTED MAJOR BUGS:
+- Incorrect type of medoid's index in K-Medians algorithm in case of Python 2.x (pyclustering.cluster.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/415
+
+- Hanging of method 'find_node' in KD-tree if it does not contain node with specified point and payload (pyclustering.container.kdtree).
+  See: no reference.
+
+- Incorrect clustering by CURE algorithm in some cases when data have a lot of identical points (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/414
+
+- Segmentation fault in CURE algorithm in some cases when data have a lot of identical points (ccore.clst.cure).
+  See: no reference.
+
+- Incorrect segmentation by Python version of syncsegm - oscillatory network based on sync for image segmentation (pyclustering.nnet.syncsegm).
+  See: https://github.com/annoviko/pyclustering/issues/409
+
+- Zero value of sigma under logarithm function in Python version of pyclustering X-Means algorithm (pyclustering.cluster.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/407
+
+- Amplitude threshold is ignored during synchronous ensembles allocation for amplitude output dynamic 'allocate_sync_ensembles' - affect HNN, LEGION (pyclustering.utils).
+  See: no reference.
+
+- Wrong indexes can be returned during synchronous ensembles allocation for amplitude output dynamic 'allocate_sync_ensembles' - affect HNN, LEGION (pyclustering.utils).
+  See: no reference.
+
+- Amount of allocated clusters can be differ from amount of centers in X-Means algorithm (ccore.clst.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/389
+
+- Amount of allocated clusters can be bigger than kmax in X-Means algorithm (pyclustering.cluster.xmeans, ccore.clst.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/388
+
+- Corrected bug with returned nullptr in method 'kdtree_searcher::find_nearest_node()' (ccore.container.kdtree).
+  See: no reference.
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.7.2 (STARTED Oct 19, 2017), (RELEASED: Oct 23, 2017)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- Correction for setup failure with PKG-INFO.rst.
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.7.1 (STARTED Oct 16, 2017), (RELEASED: Oct 19, 2017)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES:
+- Metadata and description of the pyclustering package is updated.
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.7.0 (STARTED Jun 01, 2016), (RELEASED: Oct 16, 2017)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES (pyclustering):
+- Implemented Expectation-Maximization clustering algorithm for Gaussian Mixute Model and clustering visualizer for this particular algorithm (pyclustering.cluster.ema).
+  See: https://github.com/annoviko/pyclustering/issues/16
+
+- Implemented Genetic Clustering Algorithm (GCA) and clustering visualizer for this particular algorithm (pyclustering.cluster.ga).
+  See: https://github.com/annoviko/pyclustering/issues/360
+
+- Implemented feature to obtain and visualize evolution of order parameter and local order parameter for Sync network and Sync-based algorithms (pyclustering.nnet.sync).
+  See: https://github.com/annoviko/pyclustering/issues/355
+
+- Implemented K-Means++ method for initialization of initial centers for algorithms like K-Means or X-Means (pyclustering.cluster.center_initializer).
+  See: https://github.com/annoviko/pyclustering/issues/354
+
+- Implemented fSync oscillatory network that is based on Landau-Stuart equation and Kuramoto model (pyclustering.nnet.fsync).
+  See: https://github.com/annoviko/pyclustering/issues/168
+
+- Optimization of pyclustering client to core library 'CCORE' library (pyclustering.core).
+  See: https://github.com/annoviko/pyclustering/issues/289
+  See: https://github.com/annoviko/pyclustering/issues/351
+
+- Implemented feature to show network structure of Sync family oscillatory networks in case 'ccore' usage.
+  See: https://github.com/annoviko/pyclustering/issues/344
+
+- Implemented feature to colorize OPTICS ordering diagram when amount of clusters is specified.
+  See: no reference.
+
+- Improved clustering results in case of usage MNDL splitting criterion for small datasets.
+  See: https://github.com/annoviko/pyclustering/issues/328
+
+- Feature to display connectivity radius on cluster-ordering diagram by ordering_visualizer (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/314
+
+- Feature to use CCORE implementation of OPTICS algorithm to take advance in performance (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/120
+
+- Implemented feature to shows animation of pattern recognition process that has been performed by the SyncPR oscillatory network. Method 'animate_pattern_recognition()' of class 'syncpr_visualizer' (pyclustering.nnet.syncpr).
+  See: https://www.youtube.com/watch?v=Ro7KbApL4MQ
+  See: https://www.youtube.com/watch?v=iIusOsGehoY
+
+- Implemented feature to obtain nodes of specified level of CF-tree. Method 'get_level_nodes()' of class 'cftree' (pyclustering.container.cftree).
+  See: no reference.
+
+- Implemented feature to allocate/display/animate phase matrix: 'allocate_phase_matrix()', 'show_phase_matrix()', 'animate_phase_matrix()' (pyclustering.nnet.sync).
+  See: no reference.
+
+- Implemented chaotic neural network where clustering phenomenon can be observed: 'cnn_network', 'cnn_dynamic', 'cnn_visualizer' (pyclustering.nnet.cnn).
+  See: https://github.com/annoviko/pyclustering/issues/301
+
+- Implemented feature to analyse ordering diagram using amout of clusters that should be allocated as an input parameter to calculate correct connvectity radius for clustering (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/307
+
+- Implemented feature to omit usage of initial centers - X-Means starts processing from random initial center (pyclustering.cluster.xmeans).
+  See: no reference.
+
+- Implemented feature for cluster visualizer: cluster attributes (pyclustering.cluster).
+  See: https://github.com/annoviko/pyclustering/issues/295
+
+- Implemented SOM-SC algorithm (SOM Simple Clustering) (pyclustering.cluster.somsc).
+  See: https://github.com/annoviko/pyclustering/issues/321
+
+
+GENERAL CHANGES (ccore):
+- Implemented feature to obtain and visualize evolution of order parameter and local order parameter for Sync network and Sync-based algorithms (ccore.nnet.sync).
+  See: https://github.com/annoviko/pyclustering/issues/355
+
+- Cygwin x64 platform is supported (ccore).
+  See: https://github.com/annoviko/pyclustering/issues/353
+
+- Optimization of CCORE library interface (ccore.interface).
+  See: https://github.com/annoviko/pyclustering/issues/289
+
+- Implemented MNDL splitting crinterion for X-Means algorithm (ccore.cluster_analysis.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/159
+
+- Implemented OPTICS algorithm and interface for client that results all clustering results (ccore.cluster_analysis.optics).
+  See: https://github.com/annoviko/pyclustering/issues/120
+
+- Implmeneted packing of connectivity matrix of Sync family oscillatory networks (ccore.interface.sync_interface).
+  See: https://github.com/annoviko/pyclustering/issues/344
+
+
+CORRECTED MAJOR BUGS:
+- Bug with segmentation fault during 'free()' on some linux operating systems.
+  See: no reference.
+
+- Bug with sending the first element to cluster in OPTICS even if it is noise element.
+  See: no reference.
+
+- Bug with amount of allocated clusters by K-Medoids algorithm in Python implementation and CCORE (pyclustering.cluster.kmedoids, ccore.cluster.medoids).
+  See: https://github.com/annoviko/pyclustering/issues/366
+  See: https://github.com/annoviko/pyclustering/issues/367
+
+- Bug with getting neighbors and getting information about connections in Sync-based network and algorithms in case of usage CCORE.
+  See: no reference.
+
+- Bug with calculation of number of oscillations for output dynamics.
+  See: no reference.
+
+- Memory leakage in LEGION in case of CCORE usage - API function 'legion_destroy()' was not called (pyclustering.nnet.legion).
+  See: no reference.
+
+- Bug with crash of antmeans algorithm for python version 3.6.0:414df79263a11, Dec 23 2016 [MSC v.1900 64 bit (AMD64)] (pyclustering.cluster.antmeans).
+  See: https://github.com/annoviko/pyclustering/issues/350
+
+- Memory leakage in destructor of 'pyclustering_package' - exchange mechanism between ccore and pyclustering (ccore.interface.pyclustering_package').
+  See: https://github.com/annoviko/pyclustering/issues/347
+
+- Bug with loosing of the initial state of hSync output dynamic in case of CCORE usage (ccore.cluster.hsyncnet).
+  See: https://github.com/annoviko/pyclustering/issues/346
+
+- Bug with hSync output dynamic that was displayed with discontinous parts as a set of rectangles (pyclustering.cluster.hsyncnet).
+  See: https://github.com/annoviko/pyclustering/issues/345
+
+- Bug with visualization of CNN network in case 3D data (pyclustering.nnet.cnn).
+  See: https://github.com/annoviko/pyclustering/issues/338
+
+- Bug with CCORE wrapper crashing after returning value from CCORE (pyclustering.core).
+  See: https://github.com/annoviko/pyclustering/issues/337
+
+- Bug with calculation BIC splitting criterion for X-Means algorithm (pyclustering.cluster.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/326
+
+- Bug with calculation MNDL splitting criterion for X-Means algorithm (pyclustering.cluster.xmeans).
+  See: https://github.com/annoviko/pyclustering/issues/328
+
+- Bug with loss of CF-nodes in CF-tree during inserting that leads unbalanced CF-tree (pyclustering.container.cftree).
+  See: https://github.com/annoviko/pyclustering/issues/304
+
+- Bug with time stamps for each iteration in hsyncnet algorithm (ccore.cluster.hsyncnet).
+  See: https://github.com/annoviko/pyclustering/issues/306
+
+- Bug with memory occupation by CCORE DBSCAN implementation due to adjacency matrix usage (ccore.cluster.dbscan).
+  See: https://github.com/annoviko/pyclustering/issues/309
+
+- Bug with CURE: always finds max two representative points (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/310
+
+- Bug with infinite loop in case of incorrect number of clusters 'ordering_analyser' (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/317
+
+- Bug with incorrect connectivity radius for allocation specified amount of clusters 'ordering_analyser' (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/316
+
+- Bug with clusters are allocated in the homogeneous ordering 'ordering_analyser' (pyclustering.cluster.optics).
+  See: https://github.com/annoviko/pyclustering/issues/315
+
+
+
+------------------------------------------------------------------------
+
+CHANGE NOTES FOR 0.6.0 (STARTED: Jul 18, 2015), (RELEASED: Jun 01, 2016)
+
+------------------------------------------------------------------------
+
+GENERAL CHANGES (pyclustering):
+- Implemented phase oscillatory network syncpr (pyclustering.nnet.syncpr).
+  See: https://github.com/annoviko/pyclustering/issues/208
+
+- Feature for pyclustering.nnet.syncpr that allows to use ccore library for solving.
+  See: https://github.com/annoviko/pyclustering/issues/232
+
+- Optimized simulation algorithm for sync oscillatory network (pyclustering.nnet.sync) when collecting results are not requested.
+  See: https://github.com/annoviko/pyclustering/issues/233
+
+- Images of english alphabet 100x100.
+  See: https://github.com/annoviko/pyclustering/commit/aa28f1a8a363fbeb5f074d22ec1e8258a1dd0579
+
+- Implemented feature to use rectangular network structures in oscillatory networks.
+  See: https://github.com/annoviko/pyclustering/issues/259
+
+- Implemented CLARANS algorithm (pyclustering.cluster.clarans).
+  See: https://github.com/annoviko/pyclustering/issues/52
+
+- Implemented feature to analyse and visualize results of hysteresis oscillatory network (pyclustering.nnet.hysteresis).
+  See: https://github.com/annoviko/pyclustering/issues/75
+
+- Implemented feature to analyse and visualize results of graph coloring algorithm based on hysteresis oscillatory network (pyclustering.gcolor.hysteresis).
+  See: https://github.com/annoviko/pyclustering/issues/75
+
+- Implemented ant colony based algorithm for TSP problem (pyclustering.tsp.antcolony).
+  See: https://github.com/annoviko/pyclustering/pull/277
+
+- Implemented feature to use CCORE K-Medians algorithm using argument 'ccore' to ensure high performance (pyclustering.cluster.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/231
+  
+- Implemented feature to place several plots on each row using parameter 'maximum number of rows' for cluster visualizer (pyclustering.cluster).
+  See: https://github.com/annoviko/pyclustering/issues/274
+
+- Implemented feature to specify initial number of neighbors to calculate initial connectivity radius and increase percent of number of neighbors (or radius if total number of object is exceeded) on each step (pyclustering.cluster.hsyncnet).
+  See: https://github.com/annoviko/pyclustering/issues/284
+
+- Implemented double-layer oscillatory network based on modified Kuramoto model for image segmentation (pyclustering.nnet.syncsegm).
+  See: no reference
+
+- Added new examples and demos.
+  See: no reference
+
+- Implemented feature to use CCORE K-Medoids algorithm using argument 'ccore' to ensure high performance (pyclustering.cluster.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/230
+
+- Implemented feature for CURE algorithm that provides additional information about clustering results: representative points and mean point of each cluster (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/292
+
+- Implemented feature to animate analysed output dynamic of Sync family oscillatory networks (sync_visualizer, syncnet_visualizer): correlation matrix, phase coordinates, cluster allocation (pyclustering.nnet.sync, pyclustering.cluster.syncnet).
+  See: https://www.youtube.com/watch?v=5S5mFYVihso
+  See: https://www.youtube.com/watch?v=Vd-ww9PcZvI
+  See: https://www.youtube.com/watch?v=QYPqWoyNHO8
+  See: https://www.youtube.com/watch?v=RA0MiC2WlbY
+
+- Improved algorithm SYNC-SOM: accuracy of clustering and calculation are improved in line with proof of concept where connection between oscillator in the second layer (that is represented by the self-organized feature map) should be created in line with classical radius like in SyncNet, but indirectly: if objects that correspond to two different neurons can be connected than neurons should be also connected with each other (pyclustering.cluster.syncsom).
+  See: https://github.com/annoviko/pyclustering/issues/297
+
+
+GENERAL CHANGES (ccore):
+- Implemented phase oscillatory network for pattern recognition syncpr (ccore.cluster.syncpr).
+  See: https://github.com/annoviko/pyclustering/issues/232
+  
+- Implemented agglomerative algorithm for cluster analysis (ccore.cluster.agglomerative).
+  See: https://github.com/annoviko/pyclustering/issues/212
+
+- Implemented feature to use rectangular network structures in oscillatory networks.
+  See: https://github.com/annoviko/pyclustering/issues/259
+
+- Implemented ant colony based algorithm for TSP problem (ccore.tsp.antcolony).
+  See: https://github.com/annoviko/pyclustering/pull/277
+
+- Implemented K-Medians algorithm for cluster analysis (ccore.cluster.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/231
+
+- Implemented feature to specify initial number of neighbors to calculate initial connectivity radius and increase percent of number of neighbors (or radius if total number of object is exceeded) on each step (ccore.cluster.hsyncnet).
+  https://github.com/annoviko/pyclustering/issues/284
+
+- Implemented K-Medoids algorithm for cluster analysis (ccore.cluster.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/230
+
+- Implemented feature for CURE algorithm that provides additional information about clustering results: representative points and mean point of each cluster (ccore.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/293
+
+- Implemented new class collection to oscillatory and neural network constructing.
+  See: https://github.com/annoviko/pyclustering/issues/264
+
+- Memory usage optimization for ROCK algorithm.
+  See: no reference
+
+
+CORRECTED MAJOR BUGS:
+- Bug with callback methods in ccore library in syncnet (ccore.cluster.syncnet) and hsyncnet (ccore.cluster.hsyncnet) that may lead to loss of accuracy.
+
+- Bug with division by zero in kmeans algorithm (ccore.kmeans, pyclustering.cluster.kmeans) when cluster after center updating is not able to capture object.
+  See: https://github.com/annoviko/pyclustering/issues/238
+
+- Bug with stack overflow in KD tree in case of big data (pyclustering.container.kdtree, ccore.container.kdtree).
+  See: https://github.com/annoviko/pyclustering/pull/239
+  See: https://github.com/annoviko/pyclustering/issues/255
+  See: https://github.com/annoviko/pyclustering/issues/254
+  
+- Bug with incorrect clustering in case of the same elements in cure algorithm (pyclustering.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/pull/239
+
+- Bug with execution fail in case of wrong number of initial medians and in case of the same objects with several initial medians (pyclustering.cluster.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/256
+  
+- Bug with calculation synchronous ensembles near by zero: oscillators 2*pi and 0 are considered as different (pyclustering.nnet.sync, ccore.nnet.sync).
+  See: https://github.com/annoviko/pyclustering/issues/263
+  
+- Bug with cluster allocation in kmedoids algorithm in case of the same objects with several initial medoids (pyclustering.cluster.kmedoids).
+  See: https://github.com/annoviko/pyclustering/issues/269
+
+- Bug with visualization of clusters in 3D (pyclustering.cluster).
+  See: https://github.com/annoviko/pyclustering/issues/273
+
+- Bug with obtaining nearest entry for absorbing during inserting node (pyclustering.container.cftree).
+  See: https://github.com/annoviko/pyclustering/issues/282
+
+- Bug with SOM method show_network() in case of usage CCORE (pyclustering.nnet.som).
+  See: https://github.com/annoviko/pyclustering/issues/283
+  
+- Bug with cluster allocation in case of switched off dynamic collecting (pyclustering.cluster.hsyncnet).
+  See: https://github.com/annoviko/pyclustering/issues/285
+  
+- Bug with execution fail during clustering data with rough values of initial medians (pyclustering.cluster.kmedians).
+  See: https://github.com/annoviko/pyclustering/issues/286
+
+- Bug with meamory leakage on interface between CCORE and pyclustering (ccore).
+  See: no reference
+
+- Bug with allocation correlation matrix in case of usage CCORE (pyclustering.nnet.sync).
+  See: https://github.com/annoviko/pyclustering/issues/288
+
+- Bug with memory leakage in CURE algorithm - deallocation of representative points (ccore.cluster.cure).
+  See: https://github.com/annoviko/pyclustering/issues/294
+
+- Bug with cluster visualization in case of 1D input data (pyclustering.cluster).
+  See: https://github.com/annoviko/pyclustering/issues/296
