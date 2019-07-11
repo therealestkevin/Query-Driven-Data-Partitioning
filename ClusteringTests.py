@@ -3,12 +3,22 @@ from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
 from pyclustering.samples.definitions import FCPS_SAMPLES
 from pyclustering.utils import read_sample
 from pyclustering.utils.metric import type_metric, distance_metric
+from pyclustering.cluster.elbow import elbow
 # from pyclustering.cluster import cluster_visualizer_multidim
 import numpy as np
 
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
 sample = read_sample("bitvector.txt")
-initial_centers = kmeans_plusplus_initializer(sample, 3).initialize()
+
+kmin, kmax = 2, 10
+
+elbow_inst = elbow(sample, kmin, kmax)
+
+elbow_inst.process()
+
+optimal_clusters = elbow_inst.get_amount()
+
+initial_centers = kmeans_plusplus_initializer(sample, optimal_clusters).initialize()
 
 # user_function = lambda point1, point2: sum(l1 != 12 for l1, l2 in zip(point1, point2))
 
@@ -28,4 +38,37 @@ final_centers = kmeans_instance.get_centers()
 
 print(clusters)
 print(kmeans_instance.get_total_wce())
+
+mockDataArr = []
+
+for i in range(len(sample)):
+    mockDataArr.append(i)
+mockDataPos = {}
+for i in range(len(sample)):
+    mockDataPos[i] = i
+
+print(mockDataPos)
+print(mockDataArr)
+
+mockDataClustered = []
+
+for cluster in clusters:
+    mockDataClustered.extend(cluster)
+
+for i in range(len(mockDataArr)-1):
+    if mockDataArr[i] != mockDataClustered[i]:
+        print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Moves To -> " + "Index: "
+              + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(mockDataArr[mockDataPos[mockDataClustered[i]]]))
+
+        temp = mockDataArr[i]
+        mockDataArr[i] = mockDataArr[mockDataPos[mockDataClustered[i]]]
+        mockDataArr[mockDataPos[mockDataClustered[i]]] = temp
+        temp2 = mockDataPos[mockDataClustered[i]]
+        mockDataPos[mockDataClustered[i]] = i
+        mockDataPos[temp] = temp2
+
+
+print("\n\n"+str(mockDataArr))
+
+
 kmeans_visualizer.show_clusters(sample, clusters, final_centers)
