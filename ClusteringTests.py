@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
-sample = read_sample("bitvector.txt")
+sample = read_sample("Test Data/bitvector.txt")
 
 # Sample is simply matrix holding values, can be accessed for values just like any other
 kmin, kmax = 2, 10

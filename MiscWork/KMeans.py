@@ -2,9 +2,8 @@ import random
 import math
 import sys
 import copy
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from clustering import Clustering
+from MiscWork.clustering import Clustering
 
 choices = [0, 1]
 
