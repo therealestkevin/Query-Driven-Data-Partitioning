@@ -60,6 +60,8 @@ mockDataClustered = []
 for cluster in clusters:
     mockDataClustered.extend(cluster)
 
+imageData = []
+
 for i in range(len(mockDataArr)-1):
     if mockDataArr[i] != mockDataClustered[i]:
         print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Swaps With -> " + "Index: "
@@ -97,8 +99,18 @@ for num in mockDataArr[1:]:
 print("\n\nFinal Swapped Characteristic Matrix")
 print(swappedCharecteristic)
 
-plt.imshow(swappedCharecteristic, cmap=plt.cm.Greys)
+
+fig, ax = plt.subplots(1, 2)
+
+ax[0].imshow(swappedCharecteristic, cmap=plt.cm.Greys)
+
+ax[1].imshow(numpyChar, cmap=plt.cm.Greys)
+
+ax[0].title.set_text('Clustered Characteristic Matrix')
+
+ax[1].title.set_text('Original Charecteristic Matrix')
 
 plt.show()
+
 
 # kmeans_visualizer.show_clusters(sample, clusters, final_centers)
