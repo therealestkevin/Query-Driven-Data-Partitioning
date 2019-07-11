@@ -26,7 +26,7 @@ user_function = lambda point1, point2: np.count_nonzero(np.array(point1) != np.a
 
 metricUser = distance_metric(type_metric.USER_DEFINED, func=user_function)
 
-print(metricUser([0, 1, 1], [0, 0, 1]))
+# print(metricUser([0, 1, 1], [0, 0, 1]))
 
 metric = distance_metric(type_metric.EUCLIDEAN)
 
@@ -36,8 +36,9 @@ kmeans_instance.process()
 clusters = kmeans_instance.get_clusters()
 final_centers = kmeans_instance.get_centers()
 
-print(clusters)
-print(kmeans_instance.get_total_wce())
+print("Resulting Clusters ", clusters)
+
+print("SSE: ", kmeans_instance.get_total_wce())
 
 mockDataArr = []
 
@@ -46,9 +47,11 @@ for i in range(len(sample)):
 mockDataPos = {}
 for i in range(len(sample)):
     mockDataPos[i] = i
-
-print(mockDataPos)
-print(mockDataArr)
+print("\n")
+print("Position Mappings: ", mockDataPos)
+print("\n")
+print("Initial Column Positions: ", mockDataArr)
+print("\n")
 
 mockDataClustered = []
 
@@ -57,7 +60,7 @@ for cluster in clusters:
 
 for i in range(len(mockDataArr)-1):
     if mockDataArr[i] != mockDataClustered[i]:
-        print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Moves To -> " + "Index: "
+        print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Swaps With -> " + "Index: "
               + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(mockDataArr[mockDataPos[mockDataClustered[i]]]))
 
         temp = mockDataArr[i]
@@ -68,7 +71,7 @@ for i in range(len(mockDataArr)-1):
         mockDataPos[temp] = temp2
 
 
-print("\n\n"+str(mockDataArr))
+print("\n\nResult After Swapping"+str(mockDataArr))
 
 
 kmeans_visualizer.show_clusters(sample, clusters, final_centers)
