@@ -5,6 +5,7 @@ from pyclustering.utils import read_sample
 from pyclustering.utils.metric import type_metric, distance_metric
 from pyclustering.cluster.elbow import elbow
 # from pyclustering.cluster import cluster_visualizer_multidim
+import matplotlib.pyplot as plt
 import numpy as np
 
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
@@ -96,5 +97,8 @@ for num in mockDataArr[1:]:
 print("\n\nFinal Swapped Characteristic Matrix")
 print(swappedCharecteristic)
 
+plt.imshow(swappedCharecteristic, cmap=plt.cm.Greys)
+
+plt.show()
 
 # kmeans_visualizer.show_clusters(sample, clusters, final_centers)
