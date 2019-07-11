@@ -10,6 +10,7 @@ import numpy as np
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
 sample = read_sample("bitvector.txt")
 
+# Sample is simply matrix holding values, can be accessed for values just like any other
 kmin, kmax = 2, 10
 
 elbow_inst = elbow(sample, kmin, kmax)
@@ -48,7 +49,7 @@ mockDataPos = {}
 for i in range(len(sample)):
     mockDataPos[i] = i
 print("\n")
-print("Position Mappings: ", mockDataPos)
+print("Position Mapping Hashmap: ", mockDataPos)
 print("\n")
 print("Initial Column Positions: ", mockDataArr)
 print("\n")
@@ -71,7 +72,29 @@ for i in range(len(mockDataArr)-1):
         mockDataPos[temp] = temp2
 
 
-print("\n\nResult After Swapping"+str(mockDataArr))
+print("\n\nResult After Swapping "+str(mockDataArr))
+
+origMulitDimen = np.array(sample, dtype=int)
+
+print("\n\nOriginal Coordinates")
+
+print(origMulitDimen)
+
+numpyChar = np.transpose(origMulitDimen)
+
+print("\n\nTransposed Coordinates to Characteristic Matrix")
+
+print(numpyChar)
 
 
-kmeans_visualizer.show_clusters(sample, clusters, final_centers)
+swappedCharecteristic = np.array([numpyChar[:, mockDataArr[0]]]).transpose()
+
+for num in mockDataArr[1:]:
+    temp = np.array([numpyChar[:, num]]).transpose()
+    swappedCharecteristic = np.append(swappedCharecteristic, temp, axis=1)
+
+print("\n\nFinal Swapped Characteristic Matrix")
+print(swappedCharecteristic)
+
+
+# kmeans_visualizer.show_clusters(sample, clusters, final_centers)
