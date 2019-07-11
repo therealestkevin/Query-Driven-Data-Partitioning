@@ -62,8 +62,22 @@ for cluster in clusters:
 
 imageData = []
 
+
+"""
+For loop below is column swapping 
+It is essentially brute force and assumes
+an initial arbitrary order of the clusters
+that will be ideal basis that the initial positions
+will try to adjust to. If a position is not the ideal
+that position will be swapped with the ideal column
+This is done through a Hashmap that maps positions
+of each column in order to ensure that correct swapping
+is possible. More efficient techniques will definitely
+be more desirable and is something to be explored
+"""
+
 for i in range(len(mockDataArr)-1):
-    if mockDataArr[i] != mockDataClustered[i]:
+    if i != mockDataPos[mockDataClustered[i]]:
         print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Swaps With -> " + "Index: "
               + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(mockDataArr[mockDataPos[mockDataClustered[i]]]))
 
