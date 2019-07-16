@@ -20,11 +20,7 @@ metricHamming = distance_metric(type_metric.USER_DEFINED, func=hamming_distance)
 Once clusters are returned, the columns of the characteristic matrix are swapped in order to satisfy the clusterings.  
 The process through which I do this currently is mostly brute force and improvements to this would be desired.  
 I initially create an array ***L*** in which column numbers are assigned to arbitrary column in which they are all  
-grouped in their respective clusters. Then, a dictionary mapping each column to its position is made. Finally, an array ***M***   
-with values [1, 2, ... N] is created with N being column count representing each individual column of the characteristic matrix. ***M*** is   
-sequentially iterated through and if the current index being iterated through is not equal to the current position of the column of the  
-same index within ***L***, then a swap occurs between the current column being iterated and the column that should be there. Positions  
-are then updated. An example of this swapping is shown below.  
+grouped in their respective clusters. Then, a dictionary mapping each column to its position is made. Finally, an array ***M*** with values [1, 2, ... N] is created with N being column count representing each individual column of the characteristic matrix. ***M*** is sequentially iterated through and if the current index being iterated through is not equal to the current position of the column of the same index within ***L***, then a swap occurs between the current column being iterated and the column that should be there. Positions are then updated. An example of this swapping is shown below.  
 
 
 ![swapping](https://user-images.githubusercontent.com/30887959/61324666-d6778b80-a7c7-11e9-82f8-c5f947dd4763.png)
