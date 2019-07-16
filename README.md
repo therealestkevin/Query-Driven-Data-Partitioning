@@ -27,12 +27,12 @@ same index within ***L***, then a swap occurs between the current column being i
 are then updated. An example of this swapping is shown below.  
 
 
-![swapping](https://bitbucket.org/datasystemsbu/kevinxu/raw/0ba68c2cbaea3b1ec5028dec0f377e7d41726239/images/swapping.png)  
+![swapping](https://user-images.githubusercontent.com/30887959/61324666-d6778b80-a7c7-11e9-82f8-c5f947dd4763.png)
 
 An image showing an overview of the process of swapping and resulting matrix is shown below.  
 
-![overview](https://bitbucket.org/datasystemsbu/kevinxu/raw/0ba68c2cbaea3b1ec5028dec0f377e7d41726239/images/overview.png)  
-![visualization](https://bitbucket.org/datasystemsbu/kevinxu/raw/0ba68c2cbaea3b1ec5028dec0f377e7d41726239/images/visualization.png)  
+![overview](https://user-images.githubusercontent.com/30887959/61324665-d6778b80-a7c7-11e9-8c45-72952caffa93.png)
+![visualization](https://user-images.githubusercontent.com/30887959/61324667-d6778b80-a7c7-11e9-947d-44dafcf35c96.png)
 Visualizations are all done through matplotlib.  
 Results seemed to be mixed so far with K-Means. With PyClustering, clusters are decided beforehand with elbow method.   
 With both Euclidean and Hamming distances, some runs produce nice results with 1s placed next to each  
