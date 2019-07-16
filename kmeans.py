@@ -7,8 +7,10 @@ from pyclustering.cluster.elbow import elbow
 # from pyclustering.cluster import cluster_visualizer_multidim
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
+t0 = time.time()
 sample = read_sample("Test Data/bitvector.txt")
 
 # Sample is simply matrix holding values, can be accessed for values just like any other
@@ -19,7 +21,7 @@ elbow_inst = elbow(sample, kmin, kmax)
 elbow_inst.process()
 
 optimal_clusters = elbow_inst.get_amount()
-
+print("Optimal K Clusters: ", optimal_clusters )
 initial_centers = kmeans_plusplus_initializer(sample, optimal_clusters).initialize()
 
 # user_function = lambda point1, point2: sum(l1 != 12 for l1, l2 in zip(point1, point2))
@@ -32,13 +34,16 @@ metricUser = distance_metric(type_metric.USER_DEFINED, func=user_function)
 
 metric = distance_metric(type_metric.EUCLIDEAN)
 
-kmeans_instance = kmeans(sample, initial_centers, metric=metric)
+kmeans_instance = kmeans(sample, initial_centers, metric=metricUser)
+print("Centroids: ", kmeans_instance.get_centers())
 
 kmeans_instance.process()
 clusters = kmeans_instance.get_clusters()
+
+print("Output Clusters", clusters)
 final_centers = kmeans_instance.get_centers()
 
-print("Resulting Clusters ", clusters)
+print("Centroids: ", kmeans_instance.get_centers())
 
 print("SSE: ", kmeans_instance.get_total_wce())
 
@@ -49,11 +54,11 @@ for i in range(len(sample)):
 mockDataPos = {}
 for i in range(len(sample)):
     mockDataPos[i] = i
-print("\n")
-print("Position Mapping Hashmap: ", mockDataPos)
-print("\n")
-print("Initial Column Positions: ", mockDataArr)
-print("\n")
+# print("\n")
+# print("Position Mapping Hashmap: ", mockDataPos)
+# print("\n")
+# print("Initial Column Positions: ", mockDataArr, "\n")
+
 
 mockDataClustered = []
 
@@ -61,7 +66,8 @@ for cluster in clusters:
     mockDataClustered.extend(cluster)
 
 imageData = []
-
+print("L: ",mockDataClustered)
+print("M: ", mockDataArr, "\n")
 
 """
 For loop below is column swapping 
@@ -75,50 +81,62 @@ of each column in order to ensure that correct swapping
 is possible. More efficient techniques will definitely
 be more desirable and is something to be explored
 """
-
-for i in range(len(mockDataArr)-1):
-    if i != mockDataPos[mockDataClustered[i]]:
-        print("Index: " + str(i) + "    Value: " + str(mockDataArr[i]) + "  Swaps With -> " + "Index: "
-              + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(mockDataArr[mockDataPos[mockDataClustered[i]]]))
-
-        temp = mockDataArr[i]
-        mockDataArr[i] = mockDataArr[mockDataPos[mockDataClustered[i]]]
-        mockDataArr[mockDataPos[mockDataClustered[i]]] = temp
-        temp2 = mockDataPos[mockDataClustered[i]]
-        mockDataPos[mockDataClustered[i]] = i
-        mockDataPos[temp] = temp2
-
-
-print("\n\nResult After Swapping "+str(mockDataArr))
-
 origMulitDimen = np.array(sample, dtype=int)
 
-print("\n\nOriginal Coordinates")
+# print("Original Coordinates")
 
-print(origMulitDimen)
+# print(origMulitDimen)
 
 numpyChar = np.transpose(origMulitDimen)
 
-print("\n\nTransposed Coordinates to Characteristic Matrix")
+originalSave = np.copy(numpyChar)
 
-print(numpyChar)
+print("Characteristic Matrix (First Row is Column Numbers)")
+printNumpy = np.insert(numpyChar, 0, mockDataArr, 0)
+print(printNumpy, "\n")
+for i in range(len(mockDataArr)-1):
+    if i != mockDataPos[mockDataClustered[i]]:
+        print("Index: " + str(i) + "    Value: " + str(numpyChar[:, i]) + "  Swaps With -> " + "Index: "
+              + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(numpyChar[:, mockDataPos[mockDataClustered[i]]]))
 
+        temp = np.copy(numpyChar[:, i])
 
-swappedCharecteristic = np.array([numpyChar[:, mockDataArr[0]]]).transpose()
+        realTemp = mockDataArr[i]
 
-for num in mockDataArr[1:]:
-    temp = np.array([numpyChar[:, num]]).transpose()
-    swappedCharecteristic = np.append(swappedCharecteristic, temp, axis=1)
+        mockDataArr[i] = mockDataArr[mockDataPos[mockDataClustered[i]]]
 
-print("\n\nFinal Swapped Characteristic Matrix")
-print(swappedCharecteristic)
+        mockDataArr[mockDataPos[mockDataClustered[i]]] = realTemp
 
+        numpyChar[:, i] = numpyChar[:, mockDataPos[mockDataClustered[i]]]
 
+        numpyChar[:, mockDataPos[mockDataClustered[i]]] = temp
+
+        temp2 = mockDataPos[mockDataClustered[i]]
+
+        mockDataPos[mockDataClustered[i]] = i
+
+        mockDataPos[realTemp] = temp2
+t1 = time.time()
+
+print("\n\nColumn Positions After Swapping: ", mockDataArr)
+
+# swappedCharecteristic = np.array([numpyChar[:, mockDataArr[0]]]).transpose()
+#
+# for num in mockDataArr[1:]:
+#     temp = np.array([numpyChar[:, num]]).transpose()
+#     swappedCharecteristic = np.append(swappedCharecteristic, temp, axis=1)
+
+print("\n\nFinal Swapped Characteristic Matrix (First Row is Column Numbers)")
+printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
+
+print(printArray)
+
+print("\n\nTotal Runtime: ", (t1-t0))
 fig, ax = plt.subplots(1, 2)
 
-ax[0].imshow(swappedCharecteristic, cmap=plt.cm.Greys)
+ax[0].imshow(numpyChar, cmap=plt.cm.Greys)
 
-ax[1].imshow(numpyChar, cmap=plt.cm.Greys)
+ax[1].imshow(originalSave, cmap=plt.cm.Greys)
 
 ax[0].title.set_text('Clustered Characteristic Matrix')
 
