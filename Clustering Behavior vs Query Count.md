@@ -1,10 +1,4 @@
-Using the same dataset from a 20x20 characteristic matrix, we clustered iterations of the dataset, incrementally adding queries to discover  
-the patterns of the algorithm. What was found that especially in the cases of completely randomized data, as the query count begins to  
-climb, the reliability and effectiveness of the clustering diminishes very quickly. This could be attributed to the fact that since the  
-data is completely random, the queries are simply too different and thus the columns are way too varied and unclustered fundamentally  
-to be able to achieve good clustering. Thus, maybe trying the clustering on patternized data sets in which more practical queries  
-are used may achieve better results. The diagrams below show basic information about the clustering as query count goes up. I plan  
-to add error statistics, percentages, and more info to these visualizations as well to give a better view of the results.
+Using the same dataset from a 20x20 characteristic matrix, we clustered iterations of the dataset, incrementally adding queries to discover the patterns of the algorithm. What was found that especially in the cases of completely randomized data, as the query count begins to climb, the reliability and effectiveness of the clustering diminishes very quickly. This could be attributed to the fact that since the data is completely random, the queries are simply too different and thus the columns are way too varied and unclustered fundamentally to be able to achieve good clustering. Thus, maybe trying the clustering on patternized data sets in which more practical queries are used may achieve better results. The diagrams below show basic information about the clustering as query count goes up. I plan to add error statistics, percentages, and more info to these visualizations as well to give a better view of the results.
 
 
 
