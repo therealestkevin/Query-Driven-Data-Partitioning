@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from pyclustering.utils import read_sample
 
-sample = np.array(read_sample("Test Data/bitvector.txt"), int)
+sample = np.array(read_sample("TestData/bitvector.txt"), int)
 
 print(sample)
 

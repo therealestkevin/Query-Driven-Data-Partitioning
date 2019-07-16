@@ -11,10 +11,10 @@ import time
 
 # sample = read_sample(FCPS_SAMPLES.SAMPLE_WING_NUT)
 t0 = time.time()
-sample = read_sample("Test Data/bitvector.txt")
+sample = read_sample("TestData/bitvector.txt")
 
 # Sample is simply matrix holding values, can be accessed for values just like any other
-kmin, kmax = 2, 10
+kmin, kmax = len(sample[0]), len(sample[0])*4
 
 elbow_inst = elbow(sample, kmin, kmax)
 
