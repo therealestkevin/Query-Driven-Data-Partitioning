@@ -6,8 +6,7 @@ from pyclustering.cluster.elbow import elbow
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-
-
+import math
 
 
 def calcError(arr):
@@ -33,20 +32,47 @@ def calcError(arr):
     return error
 
 
+def reorder(ideal, original):
+    print()
+
+
+def subcluster(dataset):
+
+    kmin = len(dataset[0])
+    kmax = len(dataset)
+    optimal_clusters = 1
+    if kmax - kmin <= 3:
+        optimal_clusters = int((kmin+kmax)/2)
+    else:
+        elbow_inst = elbow(dataset, kmin, kmax)
+        elbow_inst.process()
+        optimal_clusters = elbow_inst.get_amount()
+    if optimal_clusters > len(dataset):
+        optimal_clusters = len(dataset)
+    initial_centers = kmeans_plusplus_initializer(dataset, optimal_clusters).initialize()
+    metric = distance_metric(type_metric.EUCLIDEAN)
+    kmeans_instance = kmeans(dataset, initial_centers, metric=metric)
+    kmeans_instance.process()
+    clusters = kmeans_instance.get_clusters()
+
+    return clusters
+
+
 def runkmeans(sample, clustnum):
     global minError
     t0 = time.time()
+    kmin, kmax = len(sample[0]), len(sample[0])*4
 
-    # kmin, kmax = len(sample[0]), len(sample[0])*4
-    #
-    # elbow_inst = elbow(sample, kmin, kmax)
-    #
-    # elbow_inst.process()
-    #
-    # optimal_clusters = elbow_inst.get_amount()
-    # print("Optimal K Clusters: ", optimal_clusters)
+    elbow_inst = elbow(sample, kmin, kmax)
+
+    elbow_inst.process()
+
+    optimal_clusters = elbow_inst.get_amount()
+    print("Optimal K Clusters: ", optimal_clusters)
 
     initial_centers = kmeans_plusplus_initializer(sample, clustnum).initialize()
+
+    # user_function = lambda point1, point2: sum(l1 != 12 for l1, l2 in zip(point1, point2))
 
     user_function = lambda point1, point2: np.count_nonzero(np.array(point1) != np.array(point2))
 
@@ -67,26 +93,50 @@ def runkmeans(sample, clustnum):
 
     print("SSE: ", kmeans_instance.get_total_wce())
 
-    mockDataArr = []
-
-    for i in range(len(sample)):
-        mockDataArr.append(i)
-    mockDataPos = {}
-    for i in range(len(sample)):
-        mockDataPos[i] = i
-
-    mockDataClustered = []
-
-    for cluster in clusters:
-        mockDataClustered.extend(cluster)
-
-    imageData = []
-    print("L: ",mockDataClustered)
-    print("M: ", mockDataArr, "\n")
-
     origMulitDimen = np.array(sample, dtype=int)
 
     numpyChar = np.transpose(origMulitDimen)
+
+    mockDataArr = []
+
+    for p in range(len(sample)):
+        mockDataArr.append(p)
+    mockDataPos = {}
+    for l in range(len(sample)):
+        mockDataPos[l] = l
+
+    mockDataClustered = []
+
+
+    realmockdata = []
+    origclustercount = len(clusters)
+    inception = int(math.log10(len(sample)))
+    for num in range(inception):
+        for part in clusters:
+
+            newsubclustered = []
+            for col in part:
+                newsubclustered.append(origMulitDimen[col])
+
+            if len(newsubclustered) > 0:
+                neworder = subcluster(newsubclustered)
+
+                for b in range(len(neworder)):
+                    for f in range(len(neworder[b])):
+                        neworder[b][f] = part[neworder[b][f]]
+                realmockdata.extend(neworder)
+                if num == inception - 1:
+                    mockDataClustered.extend(neworder)
+            # elif len(newsubclustered) == 1:
+            #     realmockdata.append(part)
+        clusters = realmockdata.copy()
+        realmockdata = []
+    imageData = []
+
+    for k in mockDataClustered:
+        realmockdata.extend(k)
+    print("L: ", realmockdata)
+    print("M: ", mockDataArr, "\n")
 
     originalSave = np.copy(numpyChar)
 
@@ -94,36 +144,34 @@ def runkmeans(sample, clustnum):
     printNumpy = np.insert(numpyChar, 0, mockDataArr, 0)
     print(printNumpy, "\n")
     for i in range(len(mockDataArr)-1):
-        if i != mockDataPos[mockDataClustered[i]]:
+        print("I: " + str(i))
+        print("RealMockData: ", realmockdata)
+        print("Length: ", len(realmockdata))
+        if i != mockDataPos[realmockdata[i]]:
             print("Index: " + str(i) + "    Value: " + str(numpyChar[:, i]) + "  Swaps With -> " + "Index: "
-                  + str(mockDataPos[mockDataClustered[i]]) + "  Value: " + str(numpyChar[:, mockDataPos[mockDataClustered[i]]]))
+                  + str(mockDataPos[realmockdata[i]]) + "  Value: " + str(numpyChar[:, mockDataPos[realmockdata[i]]]))
 
             temp = np.copy(numpyChar[:, i])
 
             realTemp = mockDataArr[i]
 
-            mockDataArr[i] = mockDataArr[mockDataPos[mockDataClustered[i]]]
+            mockDataArr[i] = mockDataArr[mockDataPos[realmockdata[i]]]
 
-            mockDataArr[mockDataPos[mockDataClustered[i]]] = realTemp
+            mockDataArr[mockDataPos[realmockdata[i]]] = realTemp
 
-            numpyChar[:, i] = numpyChar[:, mockDataPos[mockDataClustered[i]]]
+            numpyChar[:, i] = numpyChar[:, mockDataPos[realmockdata[i]]]
 
-            numpyChar[:, mockDataPos[mockDataClustered[i]]] = temp
+            numpyChar[:, mockDataPos[realmockdata[i]]] = temp
 
-            temp2 = mockDataPos[mockDataClustered[i]]
+            temp2 = mockDataPos[realmockdata[i]]
 
-            mockDataPos[mockDataClustered[i]] = i
+            mockDataPos[realmockdata[i]] = i
 
             mockDataPos[realTemp] = temp2
     t1 = time.time()
 
     print("\n\nColumn Positions After Swapping: ", mockDataArr)
 
-    # swappedCharecteristic = np.array([numpyChar[:, mockDataArr[0]]]).transpose()
-    #
-    # for num in mockDataArr[1:]:
-    #     temp = np.array([numpyChar[:, num]]).transpose()
-    #     swappedCharecteristic = np.append(swappedCharecteristic, temp, axis=1)
 
     print("\n\nFinal Swapped Characteristic Matrix (First Row is Column Numbers)")
     printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
@@ -132,33 +180,63 @@ def runkmeans(sample, clustnum):
 
     swappederror = calcError(numpyChar)
     defaulterror = calcError(originalSave)
-
+    # print("\n\nTotal Runtime: ", (t1 - t0))
+    # fig, ax = plt.subplots(1, 2)
+    # fig.suptitle('Clusters: ' + str(len(clusters)), fontsize=20)
+    # clusteredcoltext = " "
+    # mid = int(len(mockDataClustered) / 2)
+    # clusteredcoltext += str(mockDataClustered[:mid])
+    # clusteredcoltext += "\n"
+    # clusteredcoltext += str(mockDataClustered[mid:])
+    #
+    # fig.text(.5, .05, 'Clustered Columns: ' + str(clusteredcoltext), ha='center')
+    # fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
+    # fig.text(.5, .2, 'Clustered Error: ' + str(swappederror), ha='center')
+    # ax[0].imshow(numpyChar, cmap=plt.cm.Greys)
+    #
+    # ax[1].imshow(originalSave, cmap=plt.cm.Greys)
+    #
+    # ax[0].title.set_text('Clustered Characteristic Matrix')
+    #
+    # ax[1].title.set_text('Original Charecteristic Matrix')
+    #
+    # plt.show()
+    #
     if swappederror < minError:
         print("\n\nTotal Runtime: ", (t1 - t0))
         fig, ax = plt.subplots(1, 2)
-        fig.suptitle('Clusters: ' + str(len(clusters)), fontsize=20)
-        fig.text(.5, .05, 'Clustered Columns: ' + str(clusters), ha='center')
-        fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
-        fig.text(.5, .15, 'Clustered Error: ' + str(swappederror), ha='center')
-        ax[0].imshow(numpyChar, cmap=plt.cm.Greys)
+        clusteredcoltext = " "
+        mid = int(len(mockDataClustered) / 2)
+        clusteredcoltext += str(mockDataClustered[:mid])
+        clusteredcoltext += "\n"
+        clusteredcoltext += str(mockDataClustered[mid:])
 
-        ax[1].imshow(originalSave, cmap=plt.cm.Greys)
+        fig.text(.5, .05, 'Clustered Columns: ' + str(clusteredcoltext), ha='center')
+        f = open("clusters.txt", "w+")
+        f.write(str(mockDataClustered))
+        fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
+        fig.text(.5, .2, 'Clustered Error: ' + str(swappederror), ha='center')
+        fig.suptitle('Sub-Clusters: ' + str(len(mockDataClustered)) +
+                     '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
+
+        ax[0].imshow(numpyChar, interpolation='none', cmap=plt.cm.Greys)
+
+        ax[1].imshow(originalSave, interpolation='none', cmap=plt.cm.Greys)
 
         ax[0].title.set_text('Clustered Characteristic Matrix')
 
         ax[1].title.set_text('Original Charecteristic Matrix')
 
         minError = swappederror
-        plt.savefig("Winner.png")
+        plt.savefig("Winner.png", dpi=200)
+        plt.show()
 
-
-
-
-
+sample = read_sample("TestData/bitvector.txt")
 
 minError = 100000000000000000000000
-sample = read_sample("TestData/formatted.txt")
+
 maxCluster = len(sample)
 
-for i in range(1, maxCluster):
-    runkmeans(sample, i)
+for v in range(1, maxCluster):
+    print(v)
+    runkmeans(sample, v)
