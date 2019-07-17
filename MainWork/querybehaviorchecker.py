@@ -7,8 +7,33 @@ from pyclustering.cluster.elbow import elbow
 # from pyclustering.cluster import cluster_visualizer_multidim
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-def createVisual(fileNum, type):
+
+def calcError(arr):
+    error = 0
+    for row in arr:
+        endPoint = len(arr[0])-1
+        startPoint = 0
+        endFlag = False
+        startFlag = False
+        while not endFlag:
+            if row[endPoint] == 1:
+                endFlag = True
+            else:
+                endPoint -= 1
+        while not startFlag:
+            if row[startPoint] == 1:
+                startFlag = True
+            else:
+                startPoint += 1
+        for point in range(startPoint, endPoint+1):
+            if row[point] == 0:
+                error += 1
+    return error
+
+
+def createvisual(fileNum, type):
     sample = read_sample("TestData/QueryBehaviorText/"+str(fileNum)+".txt")
 
     # Sample is simply matrix holding values, can be accessed for values just like any other
@@ -101,10 +126,15 @@ def createVisual(fileNum, type):
 
     printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
 
-
+    swappederror = calcError(numpyChar)
+    defaulterror = calcError(originalSave)
+    f.write(str(swappederror/defaulterror * 100)+"\n")
+    print(swappederror/defaulterror)
     fig, ax = plt.subplots(1, 2)
-    fig.suptitle('Clusters: '+ str(len(clusters)), fontsize=20)
+    fig.suptitle('Clusters: ' + str(len(clusters)), fontsize=20)
     fig.text(.5, .05, 'Clustered Columns: ' + str(clusters), ha='center')
+    fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
+    fig.text(.5, .15, 'Clustered Error: ' + str(swappederror), ha='center')
     ax[0].imshow(numpyChar, cmap=plt.cm.Greys)
 
     ax[1].imshow(originalSave, cmap=plt.cm.Greys)
@@ -119,5 +149,10 @@ def createVisual(fileNum, type):
         plt.savefig("TestData/QueryBehaviorVisualsEuclidean/" + str(fileNum) + ".png")
 
 
+name = os.path.join("TestData/PercentData/percents.txt")
+f = open(name, "w+")
+
 for i in range(3, 20):
-    createVisual(i, 1)
+    createvisual(i, 1)
+f.close()
+
