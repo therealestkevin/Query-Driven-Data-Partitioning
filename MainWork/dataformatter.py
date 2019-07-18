@@ -6,7 +6,7 @@ def split(word):
     return [char for char in word]
 
 
-filename = os.path.join("TestData/largedata.txt")
+filename = os.path.join("TestData/largerealset.txt")
 f = open(filename, "r")
 data = f.readlines()
 matrix = np.array([], int)

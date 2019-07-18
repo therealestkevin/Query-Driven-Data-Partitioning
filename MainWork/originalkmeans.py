@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import math
-
+import os
 
 def calcError(arr):
     error = 0
@@ -16,19 +16,28 @@ def calcError(arr):
         startPoint = 0
         endFlag = False
         startFlag = False
+        valid = True
         while not endFlag:
             if row[endPoint] == 1:
                 endFlag = True
+            elif endPoint == 0:
+                endFlag = True
+                valid = False
             else:
                 endPoint -= 1
         while not startFlag:
+
             if row[startPoint] == 1:
                 startFlag = True
+            elif startPoint == len(arr)-1:
+                startFlag = True
+                valid = False
             else:
                 startPoint += 1
-        for point in range(startPoint, endPoint+1):
-            if row[point] == 0:
-                error += 1
+        if valid:
+            for point in range(startPoint, endPoint+1):
+                if row[point] == 0:
+                    error += 1
     return error
 
 
@@ -60,15 +69,7 @@ def subcluster(dataset):
 
 def runkmeans(sample, clustnum):
     global minError
-    t0 = time.time()
-    kmin, kmax = len(sample[0]), len(sample[0])*4
 
-    elbow_inst = elbow(sample, kmin, kmax)
-
-    elbow_inst.process()
-
-    optimal_clusters = elbow_inst.get_amount()
-    print("Optimal K Clusters: ", optimal_clusters)
 
     initial_centers = kmeans_plusplus_initializer(sample, clustnum).initialize()
 
@@ -168,7 +169,7 @@ def runkmeans(sample, clustnum):
             mockDataPos[realmockdata[i]] = i
 
             mockDataPos[realTemp] = temp2
-    t1 = time.time()
+
 
     print("\n\nColumn Positions After Swapping: ", mockDataArr)
 
@@ -180,30 +181,9 @@ def runkmeans(sample, clustnum):
 
     swappederror = calcError(numpyChar)
     defaulterror = calcError(originalSave)
-    # print("\n\nTotal Runtime: ", (t1 - t0))
-    # fig, ax = plt.subplots(1, 2)
-    # fig.suptitle('Clusters: ' + str(len(clusters)), fontsize=20)
-    # clusteredcoltext = " "
-    # mid = int(len(mockDataClustered) / 2)
-    # clusteredcoltext += str(mockDataClustered[:mid])
-    # clusteredcoltext += "\n"
-    # clusteredcoltext += str(mockDataClustered[mid:])
-    #
-    # fig.text(.5, .05, 'Clustered Columns: ' + str(clusteredcoltext), ha='center')
-    # fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
-    # fig.text(.5, .2, 'Clustered Error: ' + str(swappederror), ha='center')
-    # ax[0].imshow(numpyChar, cmap=plt.cm.Greys)
-    #
-    # ax[1].imshow(originalSave, cmap=plt.cm.Greys)
-    #
-    # ax[0].title.set_text('Clustered Characteristic Matrix')
-    #
-    # ax[1].title.set_text('Original Charecteristic Matrix')
-    #
-    # plt.show()
-    #
+
     if swappederror < minError:
-        print("\n\nTotal Runtime: ", (t1 - t0))
+
         fig, ax = plt.subplots(1, 2)
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
@@ -228,15 +208,17 @@ def runkmeans(sample, clustnum):
         ax[1].title.set_text('Original Charecteristic Matrix')
 
         minError = swappederror
-        plt.savefig("Winner.png", dpi=200)
+        plt.savefig("Winner.png", dpi=130)
         plt.show()
 
-sample = read_sample("TestData/bitvector.txt")
+
+os.chdir('..')
+smp = read_sample("TestData/formatted.txt")
 
 minError = 100000000000000000000000
 
-maxCluster = len(sample)
+maxCluster = len(smp)
 
-for v in range(1, maxCluster):
+for v in range(6, maxCluster):
     print(v)
-    runkmeans(sample, v)
+    runkmeans(smp, v)

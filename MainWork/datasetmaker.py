@@ -30,7 +30,7 @@ initial = np.array([[1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0]
                     [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1],
                     [1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0]])
 
-for i in range(3, len(initial)):
+for i in range(1, len(initial)):
     temp = np.transpose(initial[0: i+1, :])
     name = os.path.join("TestData/QueryBehaviorText/" + str(i) + ".txt")
     f = open(name, "w+")
