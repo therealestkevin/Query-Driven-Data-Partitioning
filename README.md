@@ -34,8 +34,17 @@ Results seemed to be mixed so far with K-Means. With PyClustering, clusters are 
 With both Euclidean and Hamming distances, some runs produce nice results with 1s placed next to each  
 other such as in the visualization above but other runs are often jumbled and seemingly unclustered.  
 Problems arise within clusters themselves as like objects are not placed next to each other, creating weird clusterings (See columns 4, 6, 15, etc. in visualization).  
-Clusters themselves could be clustered again to solve this issue and is something I am currently working on.  
+Clusters themselves could be clustered again to solve this issue and is something I am currently working on.    
 
+
+
+***UPDATE 7/18/19***  
+Subclustering has been implemented and has been of large help in reducing overall error in clustering. A key next step in observing  
+in observing the viability of clustering in data partitioning is of course using it on actual range query based data  
+so that has been done where previously clustering data had only been examined from randomly generated characteristic matrices.  
+Results in a small and larger data set are shown below:
+![smallrealimage](https://user-images.githubusercontent.com/30887959/61490946-e8416600-a962-11e9-8b56-02b9743074af.png)
+![largerealimage](https://user-images.githubusercontent.com/30887959/61490952-eaa3c000-a962-11e9-81e3-71ade46bfca4.png)
 
 
 
