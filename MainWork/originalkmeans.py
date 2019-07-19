@@ -5,14 +5,19 @@ from pyclustering.utils.metric import type_metric, distance_metric
 from pyclustering.cluster.elbow import elbow
 import matplotlib.pyplot as plt
 import numpy as np
-import time
 import math
 import os
+import argparse
+
+parser = argparse.ArgumentParser(description="Cluster Characteristic Matrix")
+parser.add_argument('-f', '--file', type=str, default="TestData/formatted.txt", help="Text File For Characteristic Matrix Coordinates")
+
+cli = parser.parse_args()
 
 def calcError(arr):
     error = 0
     for row in arr:
-        endPoint = len(arr[0])-1
+        endPoint = len(arr[0]) - 1
         startPoint = 0
         endFlag = False
         startFlag = False
@@ -29,13 +34,13 @@ def calcError(arr):
 
             if row[startPoint] == 1:
                 startFlag = True
-            elif startPoint == len(arr)-1:
+            elif startPoint == len(arr[0]) - 1:
                 startFlag = True
                 valid = False
             else:
                 startPoint += 1
         if valid:
-            for point in range(startPoint, endPoint+1):
+            for point in range(startPoint, endPoint + 1):
                 if row[point] == 0:
                     error += 1
     return error
@@ -46,12 +51,11 @@ def reorder(ideal, original):
 
 
 def subcluster(dataset):
-
     kmin = len(dataset[0])
     kmax = len(dataset)
     optimal_clusters = 1
     if kmax - kmin <= 3:
-        optimal_clusters = int((kmin+kmax)/2)
+        optimal_clusters = int((kmin + kmax) / 2)
     else:
         elbow_inst = elbow(dataset, kmin, kmax)
         elbow_inst.process()
@@ -69,7 +73,6 @@ def subcluster(dataset):
 
 def runkmeans(sample, clustnum):
     global minError
-
 
     initial_centers = kmeans_plusplus_initializer(sample, clustnum).initialize()
 
@@ -108,7 +111,6 @@ def runkmeans(sample, clustnum):
 
     mockDataClustered = []
 
-
     realmockdata = []
     origclustercount = len(clusters)
     inception = int(math.log10(len(sample)))
@@ -144,7 +146,7 @@ def runkmeans(sample, clustnum):
     print("Characteristic Matrix (First Row is Column Numbers)")
     printNumpy = np.insert(numpyChar, 0, mockDataArr, 0)
     print(printNumpy, "\n")
-    for i in range(len(mockDataArr)-1):
+    for i in range(len(mockDataArr) - 1):
         print("I: " + str(i))
         print("RealMockData: ", realmockdata)
         print("Length: ", len(realmockdata))
@@ -170,9 +172,7 @@ def runkmeans(sample, clustnum):
 
             mockDataPos[realTemp] = temp2
 
-
     print("\n\nColumn Positions After Swapping: ", mockDataArr)
-
 
     print("\n\nFinal Swapped Characteristic Matrix (First Row is Column Numbers)")
     printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
@@ -183,7 +183,6 @@ def runkmeans(sample, clustnum):
     defaulterror = calcError(originalSave)
 
     if swappederror < minError:
-
         fig, ax = plt.subplots(1, 2)
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
@@ -209,11 +208,12 @@ def runkmeans(sample, clustnum):
 
         minError = swappederror
         plt.savefig("Winner.png", dpi=130)
-        plt.show()
+        # plt.show()
 
 
 os.chdir('..')
-smp = read_sample("TestData/formatted.txt")
+direct = cli.file
+smp = read_sample(direct)
 
 minError = 100000000000000000000000
 
