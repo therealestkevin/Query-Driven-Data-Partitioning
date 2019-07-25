@@ -6,14 +6,19 @@ from pyclustering.cluster.elbow import elbow
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import os
+import sys
+from scipy.spatial import distance
 import argparse
+import os
 
 parser = argparse.ArgumentParser(description="Cluster Characteristic Matrix")
 parser.add_argument('-f', '--file', type=str, default="TestData/formatted.txt", help="Text File For Characteristic Matrix Coordinates")
 
 cli = parser.parse_args()
 
+
+# Intakes Array and Calculates Total Error
+# Error in this case being total 0s between first and last 1
 def calcError(arr):
     error = 0
     for row in arr:
@@ -22,6 +27,7 @@ def calcError(arr):
         endFlag = False
         startFlag = False
         valid = True
+        # Finding Last 1
         while not endFlag:
             if row[endPoint] == 1:
                 endFlag = True
@@ -30,6 +36,7 @@ def calcError(arr):
                 valid = False
             else:
                 endPoint -= 1
+        # Find First 1
         while not startFlag:
 
             if row[startPoint] == 1:
@@ -39,6 +46,8 @@ def calcError(arr):
                 valid = False
             else:
                 startPoint += 1
+        # If 1 was not found in the whole row
+        # Simply don't do anything because error is 0 on the row
         if valid:
             for point in range(startPoint, endPoint + 1):
                 if row[point] == 0:
@@ -46,14 +55,17 @@ def calcError(arr):
     return error
 
 
-def reorder(ideal, original):
-    print()
-
-
+# Subclustering - Clustering the Clusters
 def subcluster(dataset):
-    kmin = len(dataset[0])
+    kmin = 1
     kmax = len(dataset)
     optimal_clusters = 1
+    # Determining Clusters
+    # Might potentially be inefficient technique
+    # Instead of elbow, could again repeat what is done
+    # in the main clustering, going through K values
+    # Choosing one with lowest error from calcError
+    # This could be very time intensive however
     if kmax - kmin <= 3:
         optimal_clusters = int((kmin + kmax) / 2)
     else:
@@ -71,6 +83,8 @@ def subcluster(dataset):
     return clusters
 
 
+# Main K-Means function
+# Takes into data points as well as K value
 def runkmeans(sample, clustnum):
     global minError
 
@@ -91,53 +105,100 @@ def runkmeans(sample, clustnum):
     clusters = kmeans_instance.get_clusters()
 
     print("Output Clusters", clusters)
-    final_centers = kmeans_instance.get_centers()
 
     print("Centroids: ", kmeans_instance.get_centers())
 
     print("SSE: ", kmeans_instance.get_total_wce())
 
     origMulitDimen = np.array(sample, dtype=int)
-
+    # Data read from text file is coordinates for row
+    # Must be transposed in order to obtain proper
+    # characteristic matrix
     numpyChar = np.transpose(origMulitDimen)
 
     mockDataArr = []
-
+    # Column Number Tracking
     for p in range(len(sample)):
         mockDataArr.append(p)
+    # Column Position Dictionary
     mockDataPos = {}
     for l in range(len(sample)):
         mockDataPos[l] = l
-
+    # Clusters
     mockDataClustered = []
-
+    # Clusters with Subclusters
     realmockdata = []
+
     origclustercount = len(clusters)
+    # How many times subclustering will happen
+    # Log 10 of Total Coord Points
     inception = int(math.log10(len(sample)))
     for num in range(inception):
         for part in clusters:
-
             newsubclustered = []
             for col in part:
+                # Obtaining Cluster
                 newsubclustered.append(origMulitDimen[col])
-
             if len(newsubclustered) > 0:
+                # Retrieving Subclusters
                 neworder = subcluster(newsubclustered)
-
                 for b in range(len(neworder)):
                     for f in range(len(neworder[b])):
                         neworder[b][f] = part[neworder[b][f]]
                 realmockdata.extend(neworder)
                 if num == inception - 1:
-                    mockDataClustered.extend(neworder)
-            # elif len(newsubclustered) == 1:
-            #     realmockdata.append(part)
+                    # Appending to Final Cluster Order
+                    mockDataClustered.append(neworder)
+        # Resetting in case of next subclustering
         clusters = realmockdata.copy()
         realmockdata = []
-    imageData = []
+    # Tracking each Original Cluster
+    supercluster = []
+    for i in range(len(mockDataClustered)):
+        supercluster.append(i)
+    # Superclustering based on edges
+    # Current simplistic method is taking first
+    # Cluster and iterating through, finding
+    # which next cluster's left edge matches
+    # best to the current clusters right edge
+    for i in range(0, len(mockDataClustered) - 1):
+        closest = supercluster[i + 1]
+        didchange = closest
+        closestidx = i + 1
+        mindist = sys.maxsize
+        # Iterating with both value and index
+        for idx, k in enumerate(supercluster[i + 1:]):
+            # Calculate Euclidean Distance
+            centroid = [0 for i in range(len(sample[0]))]
+            for b in mockDataClustered[idx + i + 1]:
+                for p in b:
+                    curcoord = sample[p]
+                    for c in range(len(curcoord)):
+                        centroid[c] = curcoord[c]
 
-    for k in mockDataClustered:
-        realmockdata.extend(k)
+            curdist = distance.euclidean(sample[(mockDataClustered[i][len(mockDataClustered[i]) - 1][
+                len(mockDataClustered[i][len(mockDataClustered[i]) - 1]) - 1])],
+                                        centroid)
+            if curdist < mindist:
+                mindist = curdist
+                closest = k
+                closestidx = idx + i + 1
+        if didchange == closest:
+            print("Nothing Happened")
+        else:
+            # Swap
+            temp = supercluster[i + 1]
+            supercluster[i + 1] = closest
+            supercluster[closestidx] = temp
+
+    supermockdata = []
+    # Compiling Final Clusters
+    for i in supercluster:
+        supermockdata.append(mockDataClustered[i])
+    # Flattening Cluster Nested Arrays
+    for k in supermockdata:
+        for f in k:
+            realmockdata.extend(f)
     print("L: ", realmockdata)
     print("M: ", mockDataArr, "\n")
 
@@ -146,14 +207,17 @@ def runkmeans(sample, clustnum):
     print("Characteristic Matrix (First Row is Column Numbers)")
     printNumpy = np.insert(numpyChar, 0, mockDataArr, 0)
     print(printNumpy, "\n")
+    # Swapping Actual Characteristic Array
     for i in range(len(mockDataArr) - 1):
         print("I: " + str(i))
         print("RealMockData: ", realmockdata)
         print("Length: ", len(realmockdata))
+        # Checking if current position matches with the ideal value that should be there
         if i != mockDataPos[realmockdata[i]]:
+            # Recording Swaps
             print("Index: " + str(i) + "    Value: " + str(numpyChar[:, i]) + "  Swaps With -> " + "Index: "
                   + str(mockDataPos[realmockdata[i]]) + "  Value: " + str(numpyChar[:, mockDataPos[realmockdata[i]]]))
-
+            # Swapping column number array and actual characteristic matrix columns
             temp = np.copy(numpyChar[:, i])
 
             realTemp = mockDataArr[i]
@@ -167,7 +231,7 @@ def runkmeans(sample, clustnum):
             numpyChar[:, mockDataPos[realmockdata[i]]] = temp
 
             temp2 = mockDataPos[realmockdata[i]]
-
+            # Updating Positions
             mockDataPos[realmockdata[i]] = i
 
             mockDataPos[realTemp] = temp2
@@ -178,47 +242,60 @@ def runkmeans(sample, clustnum):
     printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
 
     print(printArray)
-
+    # Calculating Error
     swappederror = calcError(numpyChar)
     defaulterror = calcError(originalSave)
-
+    subclusts = 0
+    for clust in mockDataClustered:
+        subclusts += len(clust)
+    # If error is below previously recorded low,
+    # Show the visual and save it to image
     if swappederror < minError:
-        fig, ax = plt.subplots(1, 2)
+        fig, ax = plt.subplots(1, 2, figsize=(12, 9))
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
-        clusteredcoltext += str(mockDataClustered[:mid])
-        clusteredcoltext += "\n"
-        clusteredcoltext += str(mockDataClustered[mid:])
 
-        fig.text(.5, .05, 'Clustered Columns: ' + str(clusteredcoltext), ha='center')
+        # Convert subclusters to strings
+        # clusteredcoltext += str(supermockdata[:mid])
+        # clusteredcoltext += "\n"
+        # clusteredcoltext += str(supermockdata[mid:])
+
+        fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
         f = open("clusters.txt", "w+")
-        f.write(str(mockDataClustered))
-        fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
-        fig.text(.5, .2, 'Clustered Error: ' + str(swappederror), ha='center')
-        fig.suptitle('Sub-Clusters: ' + str(len(mockDataClustered)) +
+        f.write(str(supermockdata))
+        fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
+        fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
+        fig.suptitle('Sub-Clusters: ' + str(subclusts) +
                      '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
+        # Show black and white representations of characteristic matrix
+        ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
 
-        ax[0].imshow(numpyChar, interpolation='none', cmap=plt.cm.Greys)
-
-        ax[1].imshow(originalSave, interpolation='none', cmap=plt.cm.Greys)
+        ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
 
         ax[0].title.set_text('Clustered Characteristic Matrix')
 
         ax[1].title.set_text('Original Charecteristic Matrix')
 
         minError = swappederror
+        # Save New Low Error Run
         plt.savefig("Winner.png", dpi=130)
         plt.show()
 
 
+# Read data from text file
+
 os.chdir('..')
 direct = cli.file
-smp = read_sample(direct)
-
-minError = 100000000000000000000000
-
+smp = read_sample("TestData/formatted.txt")
+# Initialize Int maxvalue as error
+minError = sys.maxsize
+# Getting KMax
 maxCluster = len(smp)
-
+# Iterating through runs finding lowest error run
 for v in range(1, maxCluster):
     print(v)
     runkmeans(smp, v)
+
+
+
+

@@ -244,25 +244,26 @@ def runkmeans(sample, clustnum):
     # If error is below previously recorded low,
     # Show the visual and save it to image
     if swappederror < minError:
-        fig, ax = plt.subplots(1, 2)
+        fig, ax = plt.subplots(1, 2, figsize=(12, 9))
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
-        # Convert subclusters to strings
-        clusteredcoltext += str(supermockdata[:mid])
-        clusteredcoltext += "\n"
-        clusteredcoltext += str(supermockdata[mid:])
 
-        fig.text(.5, .05, 'Clustered Columns: ' + str(clusteredcoltext), ha='center')
+        # Convert subclusters to strings
+        # clusteredcoltext += str(supermockdata[:mid])
+        # clusteredcoltext += "\n"
+        # clusteredcoltext += str(supermockdata[mid:])
+
+        fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
         f = open("clusters.txt", "w+")
         f.write(str(supermockdata))
-        fig.text(.5, .125, 'Original Error: ' + str(defaulterror), ha='center')
-        fig.text(.5, .15, 'Clustered Error: ' + str(swappederror), ha='center')
+        fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
+        fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
         fig.suptitle('Sub-Clusters: ' + str(subclusts) +
                      '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
         # Show black and white representations of characteristic matrix
-        ax[0].imshow(numpyChar, interpolation='none', cmap=plt.cm.Greys)
+        ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
 
-        ax[1].imshow(originalSave, interpolation='none', cmap=plt.cm.Greys)
+        ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
 
         ax[0].title.set_text('Clustered Characteristic Matrix')
 
@@ -275,7 +276,8 @@ def runkmeans(sample, clustnum):
 
 
 # Read data from text file
-# os.chdir('..')
+
+os.chdir('..')
 direct = cli.file
 smp = read_sample("TestData/formatted.txt")
 # Initialize Int maxvalue as error
@@ -283,6 +285,6 @@ minError = sys.maxsize
 # Getting KMax
 maxCluster = len(smp)
 # Iterating through runs finding lowest error run
-for v in range(4, maxCluster):
+for v in range(1, maxCluster):
     print(v)
     runkmeans(smp, v)

@@ -6,16 +6,17 @@ def split(word):
     return [char for char in word]
 
 
-filename = os.path.join("TestData/largerealset.txt")
+os.chdir("..")
+filename = os.path.join("binary_matrix_skew.txt")
 f = open(filename, "r")
 data = f.readlines()
 matrix = np.array([], int)
 matrix = np.hstack([matrix, list(map(int, split(data[0])[:len(split(data[0]))-1]))])
 print(matrix)
-for i in range(1, len(data)):
+for i in range(1, len(data)-1):
     curLine = data[i]
     curChars = split(curLine)
-    if i == len(data) -1:
+    if i == len(data) - 1:
         curInts = list(map(int, curChars))
     else:
         curInts = list(map(int, curChars[: len(curChars)-1]))
