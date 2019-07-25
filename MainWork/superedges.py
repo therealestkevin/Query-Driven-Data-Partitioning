@@ -244,7 +244,7 @@ def runkmeans(sample, clustnum):
     # If error is below previously recorded low,
     # Show the visual and save it to image
     if swappederror < minError:
-        fig, ax = plt.subplots(1, 2, figsize=(12, 9))
+        fig, ax = plt.subplots(1, 2, figsize=(12, 15.5))
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
 
@@ -279,7 +279,7 @@ def runkmeans(sample, clustnum):
 
 os.chdir('..')
 direct = cli.file
-smp = read_sample("TestData/formatted.txt")
+smp = read_sample("TestData/QueryBehaviorText/199.txt")
 # Initialize Int maxvalue as error
 minError = sys.maxsize
 # Getting KMax
