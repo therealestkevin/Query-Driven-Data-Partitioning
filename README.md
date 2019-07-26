@@ -42,5 +42,30 @@ Subclustering has been implemented and has been of large help in reducing overal
 ![largerealimage](https://user-images.githubusercontent.com/30887959/61490952-eaa3c000-a962-11e9-81e3-71ade46bfca4.png)
 
 
+***UPDATE 7/26/19***  
+More experiments with clustering behavior as query count goes up as well as using larger data sets.  
+Testing will be done with different methods of superclustering in order to determine the efficacy of  
+each potential strategy. As of now, those methods are uniform random, edge, and centroid column comparisons.  
+
+
+***Edge Column Comparison Superclustering***    
+
+![percentedge](https://user-images.githubusercontent.com/30887959/61972626-e7c65200-af96-11e9-934c-e739c4b01048.png)
+![rawedge](https://user-images.githubusercontent.com/30887959/61972632-eb59d900-af96-11e9-9d53-c387d74b04a8.png)
+
+
+
+
+
+***Centroid Column Comparison Superclustering***  
+![percentcentroid](https://user-images.githubusercontent.com/30887959/61972636-f14fba00-af96-11e9-81b1-6fd695d38dda.png)
+![rawcentroid](https://user-images.githubusercontent.com/30887959/61972644-f44aaa80-af96-11e9-9411-95cf38d39225.png)
+
+
+
+***Uniform Random Column Comparison Superclustering***    
+![percentrandom](https://user-images.githubusercontent.com/30887959/61972660-f57bd780-af96-11e9-8871-f8ea29b35da7.png)
+![rawrandom](https://user-images.githubusercontent.com/30887959/61972663-f7459b00-af96-11e9-9923-9f04096fdc51.png)
+
 
 
