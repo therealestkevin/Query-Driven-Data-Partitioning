@@ -10,6 +10,7 @@ import sys
 from scipy.spatial import distance
 import argparse
 import os
+import random
 
 parser = argparse.ArgumentParser(description="Cluster Characteristic Matrix")
 parser.add_argument('-f', '--file', type=str, default="TestData/formatted.txt", help="Text File For Characteristic Matrix Coordinates")
@@ -100,16 +101,10 @@ def runkmeans(sample, clustnum, uniquenum):
     metric = distance_metric(type_metric.EUCLIDEAN)
 
     kmeans_instance = kmeans(sample, initial_centers, metric=metric)
-    print("Centroids: ", kmeans_instance.get_centers())
 
     kmeans_instance.process()
     clusters = kmeans_instance.get_clusters()
 
-    print("Output Clusters", clusters)
-
-    print("Centroids: ", kmeans_instance.get_centers())
-
-    print("SSE: ", kmeans_instance.get_total_wce())
 
     origMulitDimen = np.array(sample, dtype=int)
     # Data read from text file is coordinates for row
@@ -169,17 +164,18 @@ def runkmeans(sample, clustnum, uniquenum):
         mindist = sys.maxsize
         # Iterating with both value and index
         for idx, k in enumerate(supercluster[i + 1:]):
+            randomsub = random.choice(mockDataClustered[idx + i + 1])
+            randomcol = random.choice(randomsub)
             # Calculate Euclidean Distance
             curdist = distance.euclidean(sample[(mockDataClustered[i][len(mockDataClustered[i]) - 1][
                 len(mockDataClustered[i][len(mockDataClustered[i]) - 1]) - 1])],
-                                         sample[mockDataClustered[idx + i + 1][0][0]])
+                                         sample[randomcol])
             if curdist < mindist:
                 mindist = curdist
                 closest = k
                 closestidx = idx + i + 1
-        if didchange == closest:
-            print("Nothing Happened")
-        else:
+
+        if didchange != closest:
             # Swap
             temp = supercluster[i + 1]
             supercluster[i + 1] = closest
@@ -193,24 +189,18 @@ def runkmeans(sample, clustnum, uniquenum):
     for k in supermockdata:
         for f in k:
             realmockdata.extend(f)
-    print("L: ", realmockdata)
-    print("M: ", mockDataArr, "\n")
+
 
     originalSave = np.copy(numpyChar)
 
-    print("Characteristic Matrix (First Row is Column Numbers)")
-    printNumpy = np.insert(numpyChar, 0, mockDataArr, 0)
-    print(printNumpy, "\n")
+
     # Swapping Actual Characteristic Array
     for i in range(len(mockDataArr) - 1):
-        print("I: " + str(i))
-        print("RealMockData: ", realmockdata)
-        print("Length: ", len(realmockdata))
+
         # Checking if current position matches with the ideal value that should be there
         if i != mockDataPos[realmockdata[i]]:
             # Recording Swaps
-            print("Index: " + str(i) + "    Value: " + str(numpyChar[:, i]) + "  Swaps With -> " + "Index: "
-                  + str(mockDataPos[realmockdata[i]]) + "  Value: " + str(numpyChar[:, mockDataPos[realmockdata[i]]]))
+
             # Swapping column number array and actual characteristic matrix columns
             temp = np.copy(numpyChar[:, i])
 
@@ -230,12 +220,10 @@ def runkmeans(sample, clustnum, uniquenum):
 
             mockDataPos[realTemp] = temp2
 
-    print("\n\nColumn Positions After Swapping: ", mockDataArr)
 
-    print("\n\nFinal Swapped Characteristic Matrix (First Row is Column Numbers)")
-    printArray = np.insert(numpyChar, 0, np.array(mockDataArr), 0)
 
-    print(printArray)
+
+
     # Calculating Error
     swappederror = calcError(numpyChar)
     defaulterror = calcError(originalSave)
@@ -247,7 +235,7 @@ def runkmeans(sample, clustnum, uniquenum):
     # Show the visual and save it to image
     if swappederror < minError:
 
-        fig, ax = plt.subplots(1, 2, figsize=(12, 15.5))
+        # fig, ax = plt.subplots(1, 2, figsize=(12, 15.5))
         # clusteredcoltext = " "
         # mid = int(len(mockDataClustered) / 2)
 
@@ -256,26 +244,26 @@ def runkmeans(sample, clustnum, uniquenum):
         # clusteredcoltext += "\n"
         # clusteredcoltext += str(supermockdata[mid:])
 
-        fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
-        f = open("clusters.txt", "w+")
-        f.write(str(supermockdata))
-        fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
-        fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
-        fig.suptitle('Sub-Clusters: ' + str(subclusts) +
-                     '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
+        # fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
+        # f = open("clusters.txt", "w+")
+        # f.write(str(supermockdata))
+        # fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
+        # fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
+        # fig.suptitle('Sub-Clusters: ' + str(subclusts) +
+        #              '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
         # Show black and white representations of characteristic matrix
-        ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
-
-        ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
-
-        ax[0].title.set_text('Clustered Characteristic Matrix')
-
-        ax[1].title.set_text('Original Charecteristic Matrix')
+        # ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
+        #
+        # ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
+        #
+        # ax[0].title.set_text('Clustered Characteristic Matrix')
+        #
+        # ax[1].title.set_text('Original Charecteristic Matrix')
 
         minError = swappederror
         # Save New Low Error Run
-        plt.savefig("TestData/QueryBehaviorVisuals/" + str(uniquenum) + ".png", dpi=130)
-        plt.show()
+        # plt.savefig("TestData/QueryBehaviorVisuals/" + str(uniquenum) + ".png", dpi=130)
+        # plt.show()
 
 
 # Read data from text file
@@ -286,7 +274,7 @@ name = os.path.join("TestData/PercentData/percents.txt")
 f = open(name, "w+")
 percents = []
 for i in range(1, 200):
-
+    print(str(i) + "\n")
     smp = read_sample("TestData/QueryBehaviorText/" + str(i) + ".txt")
     # Initialize Int maxvalue as error
     defError = 0
@@ -297,12 +285,13 @@ for i in range(1, 200):
     for v in range(1, 50):
         if minError == 0:
             continue
-        print(v)
+
         runkmeans(smp, v, i)
-    f.write(str(minError) + " " + str(defError))
+    f.write(str(minError) + " " + str(defError) + "\n")
     percents.append((minError/defError)*100)
+
 f.write("Percents: ")
 for percent in percents:
-    f.write(str(percent))
+    f.write(str(percent) + "\n")
 
 f.close()
