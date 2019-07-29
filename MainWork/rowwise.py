@@ -132,7 +132,10 @@ def rowkmeans(sample, clustnum, curwinner):
     origclustercount = len(clusters)
     # How many times subclustering will happen
     # Log 10 of Total Coord Points
+
     inception = int(math.log10(len(sample)))
+    if len(sample) < 10:
+        inception = 1
     for num in range(inception):
         for part in clusters:
             newsubclustered = []
@@ -153,16 +156,11 @@ def rowkmeans(sample, clustnum, curwinner):
         clusters = realmockdata.copy()
         realmockdata = []
     # Tracking each Original Cluster
-    supercluster = []
-    for i in range(len(mockDataClustered)):
-        supercluster.append(i)
 
-    supermockdata = []
-    # Compiling Final Clusters
-    for i in supercluster:
-        supermockdata.append(mockDataClustered[i])
+
+
     # Flattening Cluster Nested Arrays
-    for k in supermockdata:
+    for k in mockDataClustered:
         for f in k:
             realmockdata.extend(f)
     print("L: ", realmockdata)
@@ -388,8 +386,8 @@ def runkmeans(sample, clustnum):
         fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
         f = open("clusters.txt", "w+")
         f.write(str(supermockdata))
-        fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
-        fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
+        fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
+        fig.text(.5, .2, 'Clustered Error: ' + str(swappederror), ha='center')
         fig.suptitle('Sub-Clusters: ' + str(subclusts) +
                      '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
         # Show black and white representations of characteristic matrix
