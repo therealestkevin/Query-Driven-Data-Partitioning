@@ -85,6 +85,138 @@ def subcluster(dataset):
 
 # Main K-Means function
 # Takes into data points as well as K value
+def rowkmeans(sample, clustnum, curwinner):
+    global minError
+
+    initial_centers = kmeans_plusplus_initializer(sample, clustnum).initialize()
+
+    # user_function = lambda point1, point2: sum(l1 != 12 for l1, l2 in zip(point1, point2))
+
+    user_function = lambda point1, point2: np.count_nonzero(np.array(point1) != np.array(point2))
+
+    metricUser = distance_metric(type_metric.USER_DEFINED, func=user_function)
+
+    metric = distance_metric(type_metric.EUCLIDEAN)
+
+    kmeans_instance = kmeans(sample, initial_centers, metric=metric)
+    print("Centroids: ", kmeans_instance.get_centers())
+
+    kmeans_instance.process()
+    clusters = kmeans_instance.get_clusters()
+
+    print("Output Clusters", clusters)
+
+    print("Centroids: ", kmeans_instance.get_centers())
+
+    print("SSE: ", kmeans_instance.get_total_wce())
+
+    origMulitDimen = np.array(sample, dtype=int)
+    # Data read from text file is coordinates for row
+    # Must be transposed in order to obtain proper
+    # characteristic matrix
+    numpyChar = origMulitDimen.copy()
+
+    mockDataArr = []
+    # Column Number Tracking
+    for p in range(len(sample)):
+        mockDataArr.append(p)
+    # Column Position Dictionary
+    mockDataPos = {}
+    for l in range(len(sample)):
+        mockDataPos[l] = l
+    # Clusters
+    mockDataClustered = []
+    # Clusters with Subclusters
+    realmockdata = []
+
+    origclustercount = len(clusters)
+    # How many times subclustering will happen
+    # Log 10 of Total Coord Points
+    inception = int(math.log10(len(sample)))
+    for num in range(inception):
+        for part in clusters:
+            newsubclustered = []
+            for row in part:
+                # Obtaining Cluster
+                newsubclustered.append(origMulitDimen[row])
+            if len(newsubclustered) > 0:
+                # Retrieving Subclusters
+                neworder = subcluster(newsubclustered)
+                for b in range(len(neworder)):
+                    for f in range(len(neworder[b])):
+                        neworder[b][f] = part[neworder[b][f]]
+                realmockdata.extend(neworder)
+                if num == inception - 1:
+                    # Appending to Final Cluster Order
+                    mockDataClustered.append(neworder)
+        # Resetting in case of next subclustering
+        clusters = realmockdata.copy()
+        realmockdata = []
+    # Tracking each Original Cluster
+    supercluster = []
+    for i in range(len(mockDataClustered)):
+        supercluster.append(i)
+
+    supermockdata = []
+    # Compiling Final Clusters
+    for i in supercluster:
+        supermockdata.append(mockDataClustered[i])
+    # Flattening Cluster Nested Arrays
+    for k in supermockdata:
+        for f in k:
+            realmockdata.extend(f)
+    print("L: ", realmockdata)
+    print("M: ", mockDataArr, "\n")
+
+    originalSave = np.copy(numpyChar)
+
+
+    # Swapping Actual Characteristic Array
+    for i in range(len(mockDataArr) - 1):
+        print("I: " + str(i))
+        print("RealMockData: ", realmockdata)
+        print("Length: ", len(realmockdata))
+        # Checking if current position matches with the ideal value that should be there
+        if i != mockDataPos[realmockdata[i]]:
+
+            temp = np.copy(numpyChar[i])
+
+            realTemp = mockDataArr[i]
+
+            mockDataArr[i] = mockDataArr[mockDataPos[realmockdata[i]]]
+
+            mockDataArr[mockDataPos[realmockdata[i]]] = realTemp
+
+            numpyChar[i] = numpyChar[mockDataPos[realmockdata[i]]]
+
+            numpyChar[mockDataPos[realmockdata[i]]] = temp
+
+            temp2 = mockDataPos[realmockdata[i]]
+            # Updating Positions
+            mockDataPos[realmockdata[i]] = i
+
+            mockDataPos[realTemp] = temp2
+
+    print("\n\nColumn Positions After Swapping: ", mockDataArr)
+
+    print("\n\nFinal Swapped Characteristic Matrix (First Row is Column Numbers)")
+
+    # Calculating Error
+    swappederror = calcError(np.transpose(numpyChar))
+    defaulterror = calcError(np.transpose(originalSave))
+    subclusts = 0
+    for clust in mockDataClustered:
+        subclusts += len(clust)
+    # If error is below previously recorded low,
+    # Show the visual and save it to image
+    if swappederror < minError:
+
+        minError = swappederror
+        curwinner = numpyChar
+        # Save New Low Error Run
+    return curwinner
+
+
 def runkmeans(sample, clustnum):
     global minError
 
@@ -279,12 +411,24 @@ def runkmeans(sample, clustnum):
 
 os.chdir('..')
 direct = cli.file
-smp = read_sample("TestData/formatted.txt")
+smp = np.array(read_sample("TestData/formatted.txt"))
+smp = np.transpose(smp)
 # Initialize Int maxvalue as error
 minError = sys.maxsize
 # Getting KMax
 maxCluster = len(smp)
 # Iterating through runs finding lowest error run
+curwinner = smp.copy()
+for v in range(1, maxCluster):
+    print(v)
+    curwinner = rowkmeans(smp, v, curwinner)
+
+newsmp = np.transpose(curwinner)
+
+minError = sys.maxsize
+
+maxCluster = len(newsmp)
+
 for v in range(1, int(maxCluster/2)):
     print(v)
-    runkmeans(smp, v)
+    runkmeans(newsmp, v)
