@@ -149,6 +149,7 @@ def createvisual(fileNum, type):
         plt.savefig("TestData/QueryBehaviorVisualsEuclidean/" + str(fileNum) + ".png")
 
 
+os.chdir("..")
 name = os.path.join("TestData/PercentData/percents.txt")
 f = open(name, "w+")
 

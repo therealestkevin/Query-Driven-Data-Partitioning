@@ -10,7 +10,7 @@ import sys
 from scipy.spatial import distance
 import argparse
 import os
-
+import matplotlib.ticker as ticker
 parser = argparse.ArgumentParser(description="Cluster Characteristic Matrix")
 parser.add_argument('-f', '--file', type=str, default="TestData/formatted.txt", help="Text File For Characteristic Matrix Coordinates")
 
@@ -58,7 +58,9 @@ def calcError(arr):
 # Subclustering - Clustering the Clusters
 def subcluster(dataset):
     kmin = 1
-    kmax = len(dataset)
+    kmax = 20
+    if kmax > len(dataset):
+        kmax = len(dataset)
     optimal_clusters = 1
     # Determining Clusters
     # Might potentially be inefficient technique
@@ -75,8 +77,7 @@ def subcluster(dataset):
     if optimal_clusters > len(dataset):
         optimal_clusters = len(dataset)
     initial_centers = kmeans_plusplus_initializer(dataset, optimal_clusters).initialize()
-    metric = distance_metric(type_metric.EUCLIDEAN)
-    kmeans_instance = kmeans(dataset, initial_centers, metric=metric)
+    kmeans_instance = kmeans(dataset, initial_centers)
     kmeans_instance.process()
     clusters = kmeans_instance.get_clusters()
 
@@ -244,7 +245,7 @@ def runkmeans(sample, clustnum):
     # If error is below previously recorded low,
     # Show the visual and save it to image
     if swappederror < minError:
-        fig, ax = plt.subplots(1, 2, figsize=(12, 10))
+        fig, ax = plt.subplots(1, 2, figsize=(12, 8))
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
 
@@ -261,6 +262,7 @@ def runkmeans(sample, clustnum):
         fig.suptitle('Sub-Clusters: ' + str(subclusts) +
                      '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
         # Show black and white representations of characteristic matrix
+
         ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
 
         ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
@@ -271,7 +273,7 @@ def runkmeans(sample, clustnum):
 
         minError = swappederror
         # Save New Low Error Run
-        plt.savefig("Winner.png", dpi=130)
+        plt.savefig("Winner.png", dpi=300)
         plt.show()
 
 

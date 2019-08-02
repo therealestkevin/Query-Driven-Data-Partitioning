@@ -58,8 +58,10 @@ def calcError(arr):
 # Subclustering - Clustering the Clusters
 def subcluster(dataset):
     kmin = 1
-    kmax = len(dataset)
+    kmax = 20
     optimal_clusters = 1
+    if kmax > len(dataset):
+        kmax = len(dataset)
     # Determining Clusters
     # Might potentially be inefficient technique
     # Instead of elbow, could again repeat what is done
@@ -374,7 +376,7 @@ def runkmeans(sample, clustnum):
     # If error is below previously recorded low,
     # Show the visual and save it to image
     if swappederror < minError:
-        fig, ax = plt.subplots(1, 2, figsize=(12, 10))
+        fig, ax = plt.subplots(1, 2, figsize=(50, 20))
         clusteredcoltext = " "
         mid = int(len(mockDataClustered) / 2)
 
@@ -383,7 +385,7 @@ def runkmeans(sample, clustnum):
         # clusteredcoltext += "\n"
         # clusteredcoltext += str(supermockdata[mid:])
 
-        fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
+        # fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
         f = open("clusters.txt", "w+")
         f.write(str(supermockdata))
         fig.text(.5, .15, 'Original Error: ' + str(defaulterror), ha='center')
@@ -417,7 +419,7 @@ minError = sys.maxsize
 maxCluster = len(smp)
 # Iterating through runs finding lowest error run
 curwinner = smp.copy()
-for v in range(1, maxCluster):
+for v in range(1, int(maxCluster/10)):
     print(v)
     curwinner = rowkmeans(smp, v, curwinner)
 

@@ -59,7 +59,9 @@ def calcError(arr):
 # Subclustering - Clustering the Clusters
 def subcluster(dataset):
     kmin = 1
-    kmax = len(dataset)
+    kmax = 20
+    if kmax > len(dataset):
+        kmax = len(dataset)
     optimal_clusters = 1
     # Determining Clusters
     # Might potentially be inefficient technique
@@ -153,8 +155,7 @@ def runkmeans(sample, clustnum, uniquenum):
     for i in range(len(mockDataClustered)):
         supercluster.append(i)
     # Superclustering based on edges
-    # Current simplistic method is taking first
-    # Cluster and iterating through, finding
+    # Current simplistic method is taking first    # Cluster and iterating through, finding
     # which next cluster's left edge matches
     # best to the current clusters right edge
     for i in range(0, len(mockDataClustered) - 1):
@@ -234,36 +235,8 @@ def runkmeans(sample, clustnum, uniquenum):
     # If error is below previously recorded low,
     # Show the visual and save it to image
     if swappederror < minError:
-
-        # fig, ax = plt.subplots(1, 2, figsize=(12, 15.5))
-        # clusteredcoltext = " "
-        # mid = int(len(mockDataClustered) / 2)
-
-        # Convert subclusters to strings
-        # clusteredcoltext += str(supermockdata[:mid])
-        # clusteredcoltext += "\n"
-        # clusteredcoltext += str(supermockdata[mid:])
-
-        # fig.text(.5, .05, 'Clustered Columns: ' + str(supermockdata), ha='center', wrap=True)
-        # f = open("clusters.txt", "w+")
-        # f.write(str(supermockdata))
-        # fig.text(.5, .1, 'Original Error: ' + str(defaulterror), ha='center')
-        # fig.text(.5, .12, 'Clustered Error: ' + str(swappederror), ha='center')
-        # fig.suptitle('Sub-Clusters: ' + str(subclusts) +
-        #              '  Original Cluster Count: ' + str(origclustercount), fontsize=20)
-        # Show black and white representations of characteristic matrix
-        # ax[0].imshow(numpyChar, interpolation='nearest', cmap=plt.cm.Greys)
-        #
-        # ax[1].imshow(originalSave, interpolation='nearest', cmap=plt.cm.Greys)
-        #
-        # ax[0].title.set_text('Clustered Characteristic Matrix')
-        #
-        # ax[1].title.set_text('Original Charecteristic Matrix')
-
         minError = swappederror
-        # Save New Low Error Run
-        # plt.savefig("TestData/QueryBehaviorVisuals/" + str(uniquenum) + ".png", dpi=130)
-        # plt.show()
+
 
 
 # Read data from text file
@@ -273,7 +246,7 @@ direct = cli.file
 name = os.path.join("TestData/PercentData/percents.txt")
 f = open(name, "w+")
 percents = []
-for i in range(1, 200):
+for i in range(200, 400):
     print(str(i) + "\n")
     smp = read_sample("TestData/QueryBehaviorText/" + str(i) + ".txt")
     # Initialize Int maxvalue as error
