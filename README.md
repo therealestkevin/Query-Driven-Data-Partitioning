@@ -1,5 +1,9 @@
 # Query-Driven Data-Agnostic Data Partitioning
 
+***My research during my time as a summer 2019 intern in the Boston University Department of Computer Science working under Professor Manos Athanassoulis***
+
+[Poster](https://github.com/therealestkevin/Query-Driven-Data-Partitioning/files/3490406/Xu.Kevin.POSTER.pdf)
+
 ## Background:
 
 • Physical layout of data is essential in ensuring range query efficiency in disk storage
