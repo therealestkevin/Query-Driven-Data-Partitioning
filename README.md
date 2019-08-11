@@ -10,7 +10,6 @@ Instead of being confined to Euclidean, there are options to create user defined
 other distances such as Hamming:  
   
 ```
-#!python
 
 hamming_distance = lambda point1, point2: np.count_nonzero(np.array(point1) != np.array(point2))
 
