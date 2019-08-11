@@ -1,4 +1,4 @@
-# RISE 2019 Query Driven Data Partitioning
+# QDDP Progress Documentation
 
 This repository contains work mainly pertaining to clustering and visualization processes regarding this project.
 
