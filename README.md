@@ -1,6 +1,6 @@
 # Query-Driven Data-Agnostic Data Partitioning
 
-***My research during my time as a summer 2019 intern in the Boston University Department of Computer Science working under Professor Manos Athanassoulis***
+***2019 Boston University Research***
 
 [Poster](https://github.com/therealestkevin/Query-Driven-Data-Partitioning/files/3490406/Xu.Kevin.POSTER.pdf)
 
