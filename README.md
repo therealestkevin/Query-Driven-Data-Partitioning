@@ -97,6 +97,7 @@ occurrence, and 𝑀 sub 𝑐 is the characteristic matrix. The metric is a phys
 
 • How to search/index/discard pages when querying
 
+
 ## References: 
 
 1. Novikov, Andrei. “PyClustering: Data Mining Library.” Journal of Open Source Software, vol. 4, no. 36, Apr. 2019, p. 1230. DOI.org (Crossref), doi:10.21105/joss.01230.
