@@ -2,7 +2,7 @@
 
 ***2019 Boston University Research***
 
-[Poster](https://github.com/therealestkevin/Query-Driven-Data-Partitioning/files/3490406/Xu.Kevin.POSTER.pdf)
+[Poster](https://www.bu.edu/summer/files/2019/11/Xu-Kevin-POSTER.pdf)
 
 ## Background:
 
